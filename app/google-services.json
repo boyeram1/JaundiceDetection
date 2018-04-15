@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "595876289881",
+    "firebase_url": "https://jaundice-detection-app.firebaseio.com",
+    "project_id": "jaundice-detection-app",
+    "storage_bucket": "jaundice-detection-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:595876289881:android:83a719fe93335205",
+        "android_client_info": {
+          "package_name": "edu.rosehulman.changb.boyeram1.jaundicedetection"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "595876289881-utn15mg4v83k2338bhams5mt7ghmq53a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYSOubCHqTlHiBQLkc_czIV6K61GkK97g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

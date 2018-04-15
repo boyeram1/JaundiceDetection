@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 public class LoginActivity extends AppCompatActivity implements FamilyAdapter.FamilyCallback {
 
     private FamilyAdapter mFamilyAdapter;
@@ -24,9 +26,9 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Fa
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        if (savedInstanceState == null) {
-//            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-//        }
+        if (savedInstanceState == null) {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_login);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -45,7 +47,7 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Fa
 
     public void addEditFamily(final Family family, final boolean isEditing) {
         AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-        View view = getLayoutInflater().inflate(R.layout.dialog_add_family, null, false);
+        View view = this.getLayoutInflater().inflate(R.layout.dialog_add_family, null, false);
         builder.setView(view);
         final EditText nameEditText = (EditText) view.findViewById(R.id.edit_family_name);
         if (isEditing) {

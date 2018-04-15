@@ -1,8 +1,10 @@
 package edu.rosehulman.changb.boyeram1.jaundicedetection;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -78,7 +80,18 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
                                 mFamilyCallback.onEdit(family);
                                 break;
                             case R.id.menu_context_remove:
-                                remove(holder.getAdapterPosition());
+                                AlertDialog.Builder builder = new AlertDialog.Builder((Context) mFamilyCallback);
+                                builder.setTitle(R.string.login_remove_title);
+                                builder.setMessage(R.string.login_remove_message);
+                                builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        remove(holder.getAdapterPosition());
+                                    }
+                                });
+                                builder.setNegativeButton(android.R.string.cancel, null);
+                                builder.create().show();
+
                                 break;
                         }
                         return false;
