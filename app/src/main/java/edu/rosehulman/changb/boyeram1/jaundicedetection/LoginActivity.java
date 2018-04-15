@@ -3,11 +3,13 @@ package edu.rosehulman.changb.boyeram1.jaundicedetection;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -34,10 +36,10 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Fa
             }
         });
 
-        this.mFamilyAdapter = new FamilyAdapter(this);
         RecyclerView view = (RecyclerView)findViewById(R.id.recycler_view);
         view.setLayoutManager(new LinearLayoutManager(this));
         view.setHasFixedSize(true);
+        this.mFamilyAdapter = new FamilyAdapter(this, view);
         view.setAdapter(this.mFamilyAdapter);
     }
 
@@ -74,7 +76,8 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Fa
 
     @Override
     public void onSelect(Family family) {
-
+        Log.d("Family onSelect", family.getName() + " selected");
+        Snackbar.make(findViewById(R.id.coordinator_layout_login), family.getName() + " selected", Snackbar.LENGTH_SHORT);
     }
 
     @Override

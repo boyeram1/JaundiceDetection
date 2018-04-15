@@ -2,7 +2,9 @@ package edu.rosehulman.changb.boyeram1.jaundicedetection;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,14 +25,15 @@ import java.util.List;
 
 public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder> {
 
-    private Context mContext;
     private List<Family> mFamilies;
     private FamilyCallback mFamilyCallback;
+    private RecyclerView mRecyclerView;
 //    private DatabaseReference mFamiliesRef;
 
-    public FamilyAdapter(FamilyCallback familyCallback) {
-        mFamilyCallback = familyCallback;
-        mFamilies = new ArrayList<>();
+    public FamilyAdapter(FamilyCallback familyCallback, RecyclerView view) {
+        this.mFamilyCallback = familyCallback;
+        this.mFamilies = new ArrayList<>();
+        this.mRecyclerView = view;
 //        mFamiliesRef = FirebaseDatabase.getInstance().getReference();
 //        mFamiliesRef.addChildEventListener(new FamilyEventListener());
 //        mFamiliesRef.keepSynced(true);
@@ -38,13 +41,15 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
 
     public void addFamily(String name) {
         Family family = new Family(name);
-        this.mFamilies.add(family);
-        notifyDataSetChanged();
+        this.mFamilies.add(0, family);
+        mRecyclerView.getLayoutManager().scrollToPosition(0);
+        notifyItemInserted(0);
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Log.d("CreateViewHolder", "Created View Holder");
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.family_row_view, parent, false);
         return new ViewHolder(view);
     }
@@ -56,6 +61,7 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("Family Click", family.getName() + " selected");
                 mFamilyCallback.onSelect(family);
             }
         });
@@ -72,7 +78,7 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
                                 mFamilyCallback.onEdit(family);
                                 break;
                             case R.id.menu_context_remove:
-                                
+                                remove(holder.getAdapterPosition());
                                 break;
                         }
                         return false;
@@ -82,6 +88,24 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
                 return true;
             }
         });
+    }
+
+    public void remove(final int position){
+        final Family family = this.mFamilies.get(position);
+        this.mFamilies.remove(position);
+        notifyItemRemoved(position);
+        Snackbar.make(this.mRecyclerView, "Family Removed", Snackbar.LENGTH_LONG)
+                .setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (family != null) {
+                            mFamilies.add(position, family);
+                            mRecyclerView.getLayoutManager().scrollToPosition(position);
+                            notifyItemInserted(position);
+                            Snackbar.make(mRecyclerView, "Family Restored", Snackbar.LENGTH_SHORT).show();
+                        }
+                    }
+                }).show();
     }
 
     @Override
