@@ -16,6 +16,14 @@ public class Family {
         // Needed for JSON serialization
     }
 
+    public Family(String name) {
+        this.name = name;
+    }
+
+    public void setValues(Family family) {
+        this.name = family.name;
+    }
+
     public String getName() {
         return name;
     }

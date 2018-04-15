@@ -3,4 +3,6 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="add_family_dialog_title">New Family</string>
+    <string name="edit">Edit</string>
+    <string name="remove">Remove</string>
 </resources>
