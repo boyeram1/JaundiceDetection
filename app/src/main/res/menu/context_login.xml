@@ -4,13 +4,13 @@
     tools:context=".MainActivity">
 
     <item
-        android:id="@+id/menu_context_edit"
+        android:id="@+id/menu_popup_edit"
         android:icon="@android:drawable/ic_menu_edit"
         android:showAsAction="ifRoom"
         android:title="@string/edit"
         tools:ignore="AppCompatResource" />
     <item
-        android:id="@+id/menu_context_remove"
+        android:id="@+id/menu_popup_remove"
         android:icon="@android:drawable/ic_menu_delete"
         android:showAsAction="ifRoom"
         android:title="@string/remove"

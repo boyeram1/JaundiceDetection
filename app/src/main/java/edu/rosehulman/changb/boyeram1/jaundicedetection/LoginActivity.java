@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.google.firebase.database.FirebaseDatabase;
@@ -57,6 +58,9 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Fa
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String name = nameEditText.getText().toString();
+                if (name.isEmpty()) {
+                    return;
+                }
                 if (isEditing) {
                     family.setName(name);
                     mFamilyAdapter.notifyDataSetChanged();
@@ -68,7 +72,9 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Fa
         });
         builder.setTitle(R.string.add_family_dialog_title);
         builder.setNegativeButton(android.R.string.cancel, null);
-        builder.create().show();
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        dialog.show();
     }
 
     public void addFamilyToFirebase() {

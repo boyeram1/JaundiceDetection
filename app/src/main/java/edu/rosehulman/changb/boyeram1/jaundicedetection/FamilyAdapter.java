@@ -17,6 +17,8 @@ import android.widget.TextView;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,15 +32,15 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
     private List<Family> mFamilies;
     private FamilyCallback mFamilyCallback;
     private RecyclerView mRecyclerView;
-//    private DatabaseReference mFamiliesRef;
+    private DatabaseReference mFamiliesRef;
 
     public FamilyAdapter(FamilyCallback familyCallback, RecyclerView view) {
         this.mFamilyCallback = familyCallback;
         this.mFamilies = new ArrayList<>();
         this.mRecyclerView = view;
-//        mFamiliesRef = FirebaseDatabase.getInstance().getReference();
-//        mFamiliesRef.addChildEventListener(new FamilyEventListener());
-//        mFamiliesRef.keepSynced(true);
+        mFamiliesRef = FirebaseDatabase.getInstance().getReference();
+        mFamiliesRef.addChildEventListener(new FamilyEventListener());
+        mFamiliesRef.keepSynced(true);
     }
 
     public void addFamily(String name) {
@@ -76,10 +78,10 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
-                            case R.id.menu_context_edit:
+                            case R.id.menu_popup_edit:
                                 mFamilyCallback.onEdit(family);
                                 break;
-                            case R.id.menu_context_remove:
+                            case R.id.menu_popup_remove:
                                 AlertDialog.Builder builder = new AlertDialog.Builder((Context) mFamilyCallback);
                                 builder.setTitle(R.string.login_remove_title);
                                 builder.setMessage(R.string.login_remove_message);
@@ -91,7 +93,6 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
                                 });
                                 builder.setNegativeButton(android.R.string.cancel, null);
                                 builder.create().show();
-
                                 break;
                         }
                         return false;
@@ -133,7 +134,8 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
             Family family = dataSnapshot.getValue(Family.class);
             family.setKey(dataSnapshot.getKey());
             mFamilies.add(0, family);
-            notifyDataSetChanged();
+            mRecyclerView.getLayoutManager().scrollToPosition(0);
+            notifyItemInserted(0);
         }
 
         @Override
