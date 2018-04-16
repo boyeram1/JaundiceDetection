@@ -1,9 +1,9 @@
 package edu.rosehulman.changb.boyeram1.jaundicedetection;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +17,8 @@ import android.widget.EditText;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginActivity extends AppCompatActivity implements FamilyAdapter.FamilyCallback {
+
+    protected static final String EXTRA_FAMILY = "FAMILY_NAME";
 
     private FamilyAdapter mFamilyAdapter;
 
@@ -66,7 +68,7 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Fa
                     mFamilyAdapter.notifyDataSetChanged();
                 } else {
                     mFamilyAdapter.addFamily(name);
-//                addFamilyToFirebase();
+//                    addFamilyToFirebase();
                 }
             }
         });
@@ -85,7 +87,9 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Fa
     @Override
     public void onSelect(Family family) {
         Log.d("Family onSelect", family.getName() + " selected");
-        Snackbar.make(findViewById(R.id.coordinator_layout_login), family.getName() + " selected", Snackbar.LENGTH_SHORT);
+        Intent intent = new Intent(this, FamilyActivity.class);
+        intent.putExtra(EXTRA_FAMILY, family);
+        startActivity(intent);
     }
 
     @Override
