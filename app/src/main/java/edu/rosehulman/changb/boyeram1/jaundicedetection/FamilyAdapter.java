@@ -33,6 +33,7 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
     private FamilyCallback mFamilyCallback;
     private RecyclerView mRecyclerView;
     private DatabaseReference mFamiliesRef;
+    private String[] familyNames = new String[]{ "Smith", "Johnson", "Williams", "Jones" };
 
     public FamilyAdapter(FamilyCallback familyCallback, RecyclerView view) {
         this.mFamilyCallback = familyCallback;
@@ -41,6 +42,11 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
         mFamiliesRef = FirebaseDatabase.getInstance().getReference();
         mFamiliesRef.addChildEventListener(new FamilyEventListener());
         mFamiliesRef.keepSynced(true);
+
+        // TODO: remove this for-loop once connected to Firebase
+        for(int i = 0; i < 4; i++) {
+            addFamily(familyNames[i]);
+        }
     }
 
     public void addFamily(String name) {
@@ -62,6 +68,7 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         final Family family = mFamilies.get(position);
         holder.mNameTextView.setText(family.getName());
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,6 +76,7 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
                 mFamilyCallback.onSelect(family);
             }
         });
+
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
