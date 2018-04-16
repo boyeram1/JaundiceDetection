@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp">
+
+        <TextView
+            android:id="@+id/child_name_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Child Name"
+            android:textSize="@dimen/dialog_text_size"/>
+
+        <EditText
+            android:id="@+id/edit_child_name"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:hint="Name"
+            android:inputType="textPersonName"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_toRightOf="@id/child_name_text_view"
+            android:layout_alignBaseline="@id/child_name_text_view"
+            android:textSize="@dimen/dialog_text_size"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp">
+
+        <TextView
+            android:id="@+id/child_day_of_birth_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Day of Birth"
+            android:textSize="@dimen/dialog_text_size"/>
+
+        <EditText
+            android:id="@+id/edit_child_day_of_birth"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:hint="Day of Birth"
+            android:inputType="date"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_toRightOf="@id/child_day_of_birth_text_view"
+            android:layout_alignBaseline="@id/child_day_of_birth_text_view"
+            android:textSize="@dimen/dialog_text_size"
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
+
+</LinearLayout>
