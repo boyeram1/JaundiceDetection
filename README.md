@@ -1,2 +1,7 @@
 # JaundiceDetection
-## Developers: Ashlee Boyer and Ben Chang
+Developers: Ashlee Boyer and Ben Chang
+
+## Sprint 0.5
+When the app opens, 4 default families are listed in the LoginActivity. It will display families from the database and/or shared preferences once a database is connected. Long clicking on a family in the list brings up an edit/remove popup. To add, AKA register, a family to the app, click the floating action button at the bottom right of the screen. This brings up a dialog for the user to enter the new family's name.
+
+To log in, the user clicks their family's name. This launches the FamilyActivity which contains a list of children within the family. Long clicking on a child in the list brings up an edit/remove popup. The app currently displays a default list of children for the same reasons as the default list of families mentioned above. Each child listed has their name, date of birth, and time of birth displayed in a CardView. To add a child to the family, click the floating action button at the bottom right of the screen. This brings up a dialog for the user to enter the new child's name, date of birth, and time of birth. We are currently using a custom BirthDateTime model object to assist with storing and displaying a childs birth information.
