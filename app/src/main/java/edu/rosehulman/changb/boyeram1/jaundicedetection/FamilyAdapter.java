@@ -81,7 +81,7 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
             @Override
             public boolean onLongClick(View v) {
                 PopupMenu popupMenu = new PopupMenu((Context) mFamilyCallback, v);
-                popupMenu.inflate(R.menu.context_login);
+                popupMenu.inflate(R.menu.popup_edit_remove);
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {

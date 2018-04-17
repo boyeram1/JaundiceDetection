@@ -83,7 +83,6 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Fa
 
     }
 
-
     @Override
     public void onSelect(Family family) {
         Log.d("Family onSelect", family.getName() + " selected");

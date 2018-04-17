@@ -35,7 +35,7 @@ public class FamilyActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addEditChild(false);
+                addEditChild(null, false);
             }
         });
 
@@ -46,8 +46,8 @@ public class FamilyActivity extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
     }
 
-    private void addEditChild(final boolean isEditing) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(FamilyActivity.this);
+    protected void addEditChild(final Child child, final boolean isEditing) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(FamilyActivity.this);
 
         final View view = getLayoutInflater().inflate(R.layout.dialog_add_child, null, false);
         builder.setView(view);
@@ -56,6 +56,18 @@ public class FamilyActivity extends AppCompatActivity {
         final EditText dayOfBirthEditText = (EditText) view.findViewById(R.id.edit_child_day_of_birth);
         final EditText timeOfBirthEditText = (EditText) view.findViewById(R.id.edit_child_time_of_birth);
         final BirthDateTime birthDateTime = new BirthDateTime();
+
+        if(isEditing) {
+            nameEditText.setText(child.getName());
+            dayOfBirthEditText.setText(child.getBirthDateTime().dateToString());
+            timeOfBirthEditText.setText(child.getBirthDateTime().timeToString());
+
+            birthDateTime.setDay(child.getBirthDateTime().getDay());
+            birthDateTime.setMonth(child.getBirthDateTime().getMonth());
+            birthDateTime.setYear(child.getBirthDateTime().getYear());
+            birthDateTime.setHour(child.getBirthDateTime().getHour());
+            birthDateTime.setMinute(child.getBirthDateTime().getMinute());
+        }
 
         dayOfBirthEditText.setInputType(InputType.TYPE_NULL);
         dayOfBirthEditText.setOnClickListener(new View.OnClickListener() {
@@ -77,8 +89,15 @@ public class FamilyActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int which) {
                 String name = nameEditText.getText().toString();
-                Child newChild = new Child(name, birthDateTime);
-                mAdapter.addChild(newChild);
+
+                if(isEditing) {
+                    child.setName(name);
+                    child.setBirthDateTime(birthDateTime);
+                    mAdapter.notifyDataSetChanged();
+                } else {
+                    Child newChild = new Child(name, birthDateTime);
+                    mAdapter.addChild(newChild);
+                }
             }
         });
         builder.setNegativeButton(android.R.string.cancel, null);
