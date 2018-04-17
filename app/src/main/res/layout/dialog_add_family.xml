@@ -8,7 +8,7 @@
         android:id="@+id/edit_family_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Family Name"
+        android:hint="@string/hint_name"
         android:inputType="textPersonName"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"/>

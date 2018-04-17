@@ -2,10 +2,7 @@ package edu.rosehulman.changb.boyeram1.jaundicedetection;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import com.google.firebase.database.Exclude;
-
-import java.time.LocalDateTime;
 
 /**
  * Created by boyeram1 on 4/15/2018.

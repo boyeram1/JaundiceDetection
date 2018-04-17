@@ -196,7 +196,7 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
 
         public ViewHolder(View itemView) {
             super(itemView);
-            mNameTextView = (TextView) itemView.findViewById(R.id.family_name_textview);
+            mNameTextView = (TextView) itemView.findViewById(R.id.family_name_text_view);
         }
     }
 

@@ -14,16 +14,16 @@
 
         <TextView
             android:id="@+id/child_name_text_view"
-            android:layout_width="120dp"
+            android:layout_width="125dp"
             android:layout_height="wrap_content"
-            android:text="Child Name"
+            android:text="@string/label_child_name"
             android:textSize="@dimen/dialog_text_size"/>
 
         <EditText
             android:id="@+id/edit_child_name"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:hint="Name"
+            android:hint="@string/hint_name"
             android:inputType="textPersonName"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
@@ -42,16 +42,16 @@
 
         <TextView
             android:id="@+id/child_day_of_birth_text_view"
-            android:layout_width="120dp"
+            android:layout_width="125dp"
             android:layout_height="wrap_content"
-            android:text="Day of Birth"
+            android:text="@string/label_day_of_birth"
             android:textSize="@dimen/dialog_text_size"/>
 
         <EditText
             android:id="@+id/edit_child_day_of_birth"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:hint="Day"
+            android:hint="@string/hint_day"
             android:inputType="date"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
@@ -71,16 +71,16 @@
 
         <TextView
             android:id="@+id/child_time_of_birth_text_view"
-            android:layout_width="120dp"
+            android:layout_width="125dp"
             android:layout_height="wrap_content"
-            android:text="Time of Birth"
+            android:text="@string/label_time_of_birth"
             android:textSize="@dimen/dialog_text_size"/>
 
         <EditText
             android:id="@+id/edit_child_time_of_birth"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:hint="Time"
+            android:hint="@string/hint_time"
             android:inputType="date"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
