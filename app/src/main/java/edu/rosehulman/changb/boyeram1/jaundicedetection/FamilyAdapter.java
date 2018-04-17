@@ -44,7 +44,7 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
         mFamiliesRef.keepSynced(true);
 
         // TODO: remove this for-loop once connected to Firebase
-        for(int i = 0; i < 4; i++) {
+        for(int i = 0; i < familyNames.length; i++) {
             addFamily(familyNames[i]);
         }
     }

@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Fa
             }
         });
 
-        RecyclerView view = (RecyclerView)findViewById(R.id.recycler_view);
+        RecyclerView view = (RecyclerView)findViewById(R.id.recycler_view_login);
         view.setLayoutManager(new LinearLayoutManager(this));
         view.setHasFixedSize(true);
         this.mFamilyAdapter = new FamilyAdapter(this, view);
