@@ -10,11 +10,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.TimePicker;
 
 public class FamilyActivity extends AppCompatActivity {
@@ -28,6 +26,7 @@ public class FamilyActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // TODO: This will be used once Firebase is connected
         Intent intent = getIntent();
         Family family = intent.getParcelableExtra(LoginActivity.EXTRA_FAMILY);
 
@@ -51,6 +50,7 @@ public class FamilyActivity extends AppCompatActivity {
 
         final View view = getLayoutInflater().inflate(R.layout.dialog_add_child, null, false);
         builder.setView(view);
+        builder.setTitle(R.string.add_child_dialog_title);
 
         final EditText nameEditText = (EditText) view.findViewById(R.id.edit_child_name);
         final EditText dayOfBirthEditText = (EditText) view.findViewById(R.id.edit_child_day_of_birth);
