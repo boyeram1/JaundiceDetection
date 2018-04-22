@@ -67,8 +67,7 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Fa
                     family.setName(name);
                     mFamilyAdapter.notifyDataSetChanged();
                 } else {
-                    mFamilyAdapter.addFamily(name);
-//                    addFamilyToFirebase();
+                    mFamilyAdapter.addFamily(new Family(name));
                 }
             }
         });
@@ -77,10 +76,6 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Fa
         AlertDialog dialog = builder.create();
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         dialog.show();
-    }
-
-    public void addFamilyToFirebase() {
-
     }
 
     @Override
