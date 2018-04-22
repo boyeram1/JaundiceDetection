@@ -33,27 +33,19 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
     private FamilyCallback mFamilyCallback;
     private RecyclerView mRecyclerView;
     private DatabaseReference mFamiliesRef;
-    private String[] familyNames = new String[]{ "Smith", "Johnson", "Williams", "Jones" };
 
     public FamilyAdapter(FamilyCallback familyCallback, RecyclerView view) {
         this.mFamilyCallback = familyCallback;
         this.mFamilies = new ArrayList<>();
         this.mRecyclerView = view;
-        mFamiliesRef = FirebaseDatabase.getInstance().getReference();
+
+        mFamiliesRef = FirebaseDatabase.getInstance().getReference().child("families");
         mFamiliesRef.addChildEventListener(new FamilyEventListener());
         mFamiliesRef.keepSynced(true);
-
-        // TODO: remove this for-loop once connected to Firebase
-        for(int i = 0; i < familyNames.length; i++) {
-            addFamily(familyNames[i]);
-        }
     }
 
-    public void addFamily(String name) {
-        Family family = new Family(name);
-        this.mFamilies.add(0, family);
-        mRecyclerView.getLayoutManager().scrollToPosition(0);
-        notifyItemInserted(0);
+    public void addFamily(Family family) {
+        mFamiliesRef.push().setValue(family);
     }
 
     @NonNull
@@ -114,17 +106,24 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
 
     public void remove(final int position){
         final Family family = this.mFamilies.get(position);
-        this.mFamilies.remove(position);
-        notifyItemRemoved(position);
-        Snackbar.make(this.mRecyclerView, "Family Removed", Snackbar.LENGTH_LONG)
+        mFamilies.remove(position);
+        notifyDataSetChanged();
+
+        Snackbar.make(this.mRecyclerView, family.getName() + " family removed", Snackbar.LENGTH_LONG)
                 .setAction("UNDO", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (family != null) {
                             mFamilies.add(position, family);
-                            mRecyclerView.getLayoutManager().scrollToPosition(position);
-                            notifyItemInserted(position);
-                            Snackbar.make(mRecyclerView, "Family Restored", Snackbar.LENGTH_SHORT).show();
+                            notifyDataSetChanged();
+                            Snackbar.make(mRecyclerView, family.getName() + " family restored", Snackbar.LENGTH_SHORT).show();
+                        }
+                    }
+                }).addCallback(new Snackbar.Callback() {
+                    @Override
+                    public void onDismissed(Snackbar snackbar, int event) {
+                        if(event != Snackbar.Callback.DISMISS_EVENT_ACTION && event != Snackbar.Callback.DISMISS_EVENT_CONSECUTIVE) {
+                            mFamiliesRef.child(family.getKey()).removeValue();
                         }
                     }
                 }).show();
@@ -150,6 +149,7 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
             String keyChanged = dataSnapshot.getKey();
             Family updatedFamily = dataSnapshot.getValue(Family.class);
+
             int i = 0;
             for (Family fam : mFamilies) {
                 if (fam.getKey().equals(keyChanged)) {
