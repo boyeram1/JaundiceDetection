@@ -41,9 +41,9 @@ public class Child implements Parcelable {
         this.birthDateTime = birthDateTime;
     }
 
-    public void setValues(Child Child) {
-        this.name = Child.name;
-        this.birthDateTime = Child.birthDateTime;
+    public void setValues(Child child) {
+        this.name = child.getName();
+        this.birthDateTime = child.getBirthDateTime();
     }
 
     public String getName() {
