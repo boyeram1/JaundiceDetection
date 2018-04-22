@@ -19,6 +19,7 @@ import android.widget.TimePicker;
 
 public class FamilyActivity extends AppCompatActivity implements ChildAdapter.Callback {
 
+    private String mKeyOfFamilyOfChild;
     private ChildAdapter mAdapter;
 
     @Override
@@ -31,6 +32,7 @@ public class FamilyActivity extends AppCompatActivity implements ChildAdapter.Ca
         // TODO: We should keep this so that users can still use the app offline
         Intent intent = getIntent();
         Family family = intent.getParcelableExtra(LoginActivity.EXTRA_FAMILY);
+        mKeyOfFamilyOfChild = family.getKey();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -185,5 +187,10 @@ public class FamilyActivity extends AppCompatActivity implements ChildAdapter.Ca
             }
         });
         popupMenu.show();
+    }
+
+    @Override
+    public String getKeyOfFamilyOfChild() {
+        return mKeyOfFamilyOfChild;
     }
 }

@@ -1,17 +1,12 @@
 package edu.rosehulman.changb.boyeram1.jaundicedetection;
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.PopupMenu;
 import android.widget.TextView;
-
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,7 +30,7 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
         mCallback = callback;
         mRecyclerView = recyclerView;
 
-        mChildrenRef = FirebaseDatabase.getInstance().getReference().child("children");
+        mChildrenRef = FirebaseDatabase.getInstance().getReference("children").child(mCallback.getKeyOfFamilyOfChild());
         mChildrenRef.addChildEventListener(new ChildrenChildEventListener());
     }
 
@@ -43,10 +38,29 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
         mChildrenRef.push().setValue(newChild);
     }
 
-    public void removeChild(int position) {
+    public void removeChild(final int position) {
+        final Child child = this.mChildren.get(position);
         mChildren.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, mChildren.size());
+        notifyDataSetChanged();
+
+        Snackbar.make(this.mRecyclerView, child.getName() + " child removed", Snackbar.LENGTH_LONG)
+                .setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (child != null) {
+                            mChildren.add(position, child);
+                            notifyDataSetChanged();
+                            Snackbar.make(mRecyclerView, child.getName() + " child restored", Snackbar.LENGTH_SHORT).show();
+                        }
+                    }
+                }).addCallback(new Snackbar.Callback() {
+            @Override
+            public void onDismissed(Snackbar snackbar, int event) {
+                if(event != Snackbar.Callback.DISMISS_EVENT_ACTION && event != Snackbar.Callback.DISMISS_EVENT_CONSECUTIVE) {
+                    mChildrenRef.child(child.getKey()).removeValue();
+                }
+            }
+        }).show();
     }
 
     @Override
@@ -122,6 +136,7 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
 
     public interface Callback {
         void showEditRemovePopup(Child child, View v, int position);
+        String getKeyOfFamilyOfChild();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
@@ -142,8 +157,7 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
 
         @Override
         public void onClick(View v) {
-            Child child = mChildren.get(getAdapterPosition());
-//            mCallback.onEdit(child);
+            // opens the next activity/fragment
         }
 
         @Override
