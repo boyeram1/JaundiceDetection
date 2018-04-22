@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -37,7 +39,7 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Fa
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addEditFamily(new Family(), false);
+                showAddEditDialog(null);
             }
         });
 
@@ -48,31 +50,49 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Fa
         view.setAdapter(this.mFamilyAdapter);
     }
 
-    public void addEditFamily(final Family family, final boolean isEditing) {
+    public void showAddEditDialog(final Family family) {
         AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+        builder.setTitle(R.string.add_family_dialog_title);
+
         View view = this.getLayoutInflater().inflate(R.layout.dialog_add_family, null, false);
         builder.setView(view);
+
         final EditText nameEditText = (EditText) view.findViewById(R.id.edit_family_name);
-        if (isEditing) {
+        if(family != null) {
             nameEditText.setText(family.getName());
+
+            TextWatcher textWatcher = new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    // empty
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    // empty
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    String name = nameEditText.getText().toString();
+                    mFamilyAdapter.update(family, name);
+                }
+            };
+
+            nameEditText.addTextChangedListener(textWatcher);
         }
+
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String name = nameEditText.getText().toString();
-                if (name.isEmpty()) {
-                    return;
-                }
-                if (isEditing) {
-                    family.setName(name);
-                    mFamilyAdapter.notifyDataSetChanged();
-                } else {
+                if(family == null) {
+                    String name = nameEditText.getText().toString();
                     mFamilyAdapter.addFamily(new Family(name));
                 }
             }
         });
-        builder.setTitle(R.string.add_family_dialog_title);
         builder.setNegativeButton(android.R.string.cancel, null);
+
         AlertDialog dialog = builder.create();
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         dialog.show();
@@ -88,6 +108,6 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Fa
 
     @Override
     public void onEdit(Family family) {
-        addEditFamily(family, true);
+        showAddEditDialog(family);
     }
 }

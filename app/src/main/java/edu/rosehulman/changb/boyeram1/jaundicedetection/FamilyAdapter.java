@@ -48,6 +48,11 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
         mFamiliesRef.push().setValue(family);
     }
 
+    public void update(Family family, String name) {
+        family.setValues(new Family(name));
+        mFamiliesRef.child(family.getKey()).setValue(family);
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
