@@ -9,7 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
@@ -38,7 +40,7 @@ public class FamilyActivity extends AppCompatActivity implements ChildAdapter.Ca
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addEditChild(null, false);
+                showAddEditDialog(null);
             }
         });
 
@@ -49,19 +51,19 @@ public class FamilyActivity extends AppCompatActivity implements ChildAdapter.Ca
         recyclerView.setAdapter(mAdapter);
     }
 
-    protected void addEditChild(final Child child, final boolean isEditing) {
+    protected void showAddEditDialog(final Child child) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(FamilyActivity.this);
+        builder.setTitle(R.string.add_child_dialog_title);
 
         final View view = getLayoutInflater().inflate(R.layout.dialog_add_child, null, false);
         builder.setView(view);
-        builder.setTitle(R.string.add_child_dialog_title);
 
         final EditText nameEditText = (EditText) view.findViewById(R.id.edit_child_name);
         final EditText dayOfBirthEditText = (EditText) view.findViewById(R.id.edit_child_day_of_birth);
         final EditText timeOfBirthEditText = (EditText) view.findViewById(R.id.edit_child_time_of_birth);
         final BirthDateTime birthDateTime = new BirthDateTime();
 
-        if(isEditing) {
+        if(child != null) {
             nameEditText.setText(child.getName());
             dayOfBirthEditText.setText(child.getBirthDateTime().dateToString());
             timeOfBirthEditText.setText(child.getBirthDateTime().timeToString());
@@ -71,6 +73,31 @@ public class FamilyActivity extends AppCompatActivity implements ChildAdapter.Ca
             birthDateTime.setYear(child.getBirthDateTime().getYear());
             birthDateTime.setHour(child.getBirthDateTime().getHour());
             birthDateTime.setMinute(child.getBirthDateTime().getMinute());
+
+            TextWatcher textWatcher = new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    // empty
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    // empty
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    String name = nameEditText.getText().toString();
+                    String dayOfBirth = dayOfBirthEditText.getText().toString();
+                    String timeOfBirth = timeOfBirthEditText.getText().toString();
+                    BirthDateTime birthDateTime = new BirthDateTime(dayOfBirth, timeOfBirth);
+                    mAdapter.updateChild(child, name, birthDateTime);
+                }
+            };
+
+            nameEditText.addTextChangedListener(textWatcher);
+            dayOfBirthEditText.addTextChangedListener(textWatcher);
+            timeOfBirthEditText.addTextChangedListener(textWatcher);
         }
 
         dayOfBirthEditText.setInputType(InputType.TYPE_NULL);
@@ -94,11 +121,7 @@ public class FamilyActivity extends AppCompatActivity implements ChildAdapter.Ca
             public void onClick(DialogInterface dialogInterface, int which) {
                 String name = nameEditText.getText().toString();
 
-                if(isEditing) {
-                    child.setName(name);
-                    child.setBirthDateTime(birthDateTime);
-                    mAdapter.notifyDataSetChanged();
-                } else {
+                if(child == null) {
                     Child newChild = new Child(name, birthDateTime);
                     mAdapter.addChild(newChild);
                 }
@@ -120,7 +143,7 @@ public class FamilyActivity extends AppCompatActivity implements ChildAdapter.Ca
             @Override
             public void onClick(DialogInterface dialogInterface, int which) {
                 int day = datePicker.getDayOfMonth();
-                int month = datePicker.getMonth();
+                int month = datePicker.getMonth() + 1;
                 int year = datePicker.getYear();
 
                 birthDateTime.setDay(day);
@@ -167,7 +190,7 @@ public class FamilyActivity extends AppCompatActivity implements ChildAdapter.Ca
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.menu_popup_edit:
-                        FamilyActivity.this.addEditChild(child, true);
+                        FamilyActivity.this.showAddEditDialog(child);
                         break;
                     case R.id.menu_popup_remove:
                         AlertDialog.Builder builder = new AlertDialog.Builder(FamilyActivity.this);

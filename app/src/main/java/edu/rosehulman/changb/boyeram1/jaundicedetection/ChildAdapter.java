@@ -43,14 +43,14 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
         mChildren.remove(position);
         notifyDataSetChanged();
 
-        Snackbar.make(this.mRecyclerView, child.getName() + " child removed", Snackbar.LENGTH_LONG)
+        Snackbar.make(this.mRecyclerView, child.getName() + " removed", Snackbar.LENGTH_LONG)
                 .setAction("UNDO", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (child != null) {
                             mChildren.add(position, child);
                             notifyDataSetChanged();
-                            Snackbar.make(mRecyclerView, child.getName() + " child restored", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(mRecyclerView, child.getName() + " restored", Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 }).addCallback(new Snackbar.Callback() {
@@ -61,6 +61,11 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
                 }
             }
         }).show();
+    }
+
+    public void updateChild(Child child, String name, BirthDateTime birthDateTime) {
+        child.setValues(new Child(name, birthDateTime));
+        mChildrenRef.child(child.getKey()).setValue(child);
     }
 
     @Override

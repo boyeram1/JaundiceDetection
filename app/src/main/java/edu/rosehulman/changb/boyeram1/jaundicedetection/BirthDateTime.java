@@ -47,6 +47,17 @@ public class BirthDateTime implements Parcelable {
         this.minute = minute;
     }
 
+    public BirthDateTime(String monthDayYearText, String hourMinuteText) {
+        String[] monthDayYear = monthDayYearText.split("/");
+        this.day = Integer.parseInt(monthDayYear[0]);
+        this.month = Integer.parseInt(monthDayYear[1]);
+        this.year = Integer.parseInt(monthDayYear[2]);
+
+        String[] hourMinute = hourMinuteText.split(":");
+        this.hour = Integer.parseInt(hourMinute[0]);
+        this.minute = Integer.parseInt(hourMinute[1]);
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -66,18 +77,10 @@ public class BirthDateTime implements Parcelable {
     }
 
     public String timeToString() {
-        if(hour < 10) {
-            if(minute < 10) {
-                return String.format("0%d:0%d", hour, minute);
-            } else {
-                return String.format("0%d:%d", hour, minute);
-            }
+        if(minute < 10) {
+            return String.format("%d:0%d", hour, minute);
         } else {
-            if(minute < 10) {
-                return String.format("%d:0%d", hour, minute);
-            } else {
-                return String.format("%d:%d", hour, minute);
-            }
+            return String.format("%d:%d", hour, minute);
         }
     }
 
