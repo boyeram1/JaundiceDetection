@@ -17,14 +17,15 @@ import java.util.ArrayList;
  */
 public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> {
 
-    private Context mContext;
     final ArrayList<Child> mChildren = new ArrayList<>();
     private RecyclerView mRecyclerView;
 
+    private Callback mCallback;
+
     private String[] childNames = new String[]{ "Joe", "Josh" };
 
-    public ChildAdapter(Context context, RecyclerView recyclerView) {
-        mContext = context;
+    public ChildAdapter(Callback callback, RecyclerView recyclerView) {
+        mCallback = callback;
         mRecyclerView = recyclerView;
 
         // TODO: remove this for-loop once connected to Firebase
@@ -65,7 +66,11 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
         return mChildren.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    public interface Callback {
+        void showEditRemovePopup(Child child, View v, int position);
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private TextView mNameTextView;
         private TextView mBirthDateTextView;
         private TextView mBirthTimeTextView;
@@ -73,45 +78,24 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    PopupMenu popupMenu = new PopupMenu(mContext, v);
-                    popupMenu.inflate(R.menu.popup_edit_remove);
-
-                    final FamilyActivity familyActivity = (FamilyActivity) mContext;
-                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            switch (item.getItemId()) {
-                                case R.id.menu_popup_edit:
-                                    familyActivity.addEditChild(mChildren.get(getAdapterPosition()), true);
-                                    break;
-                                case R.id.menu_popup_remove:
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                                    builder.setTitle(R.string.login_remove_title);
-                                    builder.setMessage(R.string.login_remove_message);
-                                    builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            removeChild(getAdapterPosition());
-                                        }
-                                    });
-                                    builder.setNegativeButton(android.R.string.cancel, null);
-                                    builder.create().show();
-                                    break;
-                            }
-                            return false;
-                        }
-                    });
-                    popupMenu.show();
-                    return true;
-                }
-            });
-
             mNameTextView = (TextView) itemView.findViewById(R.id.child_name_text_view);
             mBirthDateTextView = (TextView) itemView.findViewById(R.id.child_birth_date_text_view);
             mBirthTimeTextView = (TextView) itemView.findViewById(R.id.child_birth_time_text_view);
+
+            itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            Child child = mChildren.get(getAdapterPosition());
+//            mCallback.onEdit(child);
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            mCallback.showEditRemovePopup(mChildren.get(getAdapterPosition()), v, getAdapterPosition());
+            return true;
         }
     }
 }

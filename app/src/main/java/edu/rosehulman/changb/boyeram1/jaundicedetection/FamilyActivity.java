@@ -10,12 +10,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.PopupMenu;
 import android.widget.TimePicker;
 
-public class FamilyActivity extends AppCompatActivity {
+public class FamilyActivity extends AppCompatActivity implements ChildAdapter.Callback {
 
     private ChildAdapter mAdapter;
 
@@ -26,7 +28,7 @@ public class FamilyActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // TODO: This will be used once Firebase is connected
+        // TODO: We should keep this so that users can still use the app offline
         Intent intent = getIntent();
         Family family = intent.getParcelableExtra(LoginActivity.EXTRA_FAMILY);
 
@@ -152,5 +154,36 @@ public class FamilyActivity extends AppCompatActivity {
         });
         builder.setNegativeButton(android.R.string.cancel, null);
         builder.create().show();
+    }
+
+    @Override
+    public void showEditRemovePopup(final Child child, View v, final int position) {
+        PopupMenu popupMenu = new PopupMenu(FamilyActivity.this, v);
+        popupMenu.inflate(R.menu.popup_edit_remove);
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menu_popup_edit:
+                        FamilyActivity.this.addEditChild(child, true);
+                        break;
+                    case R.id.menu_popup_remove:
+                        AlertDialog.Builder builder = new AlertDialog.Builder(FamilyActivity.this);
+                        builder.setTitle(R.string.login_remove_title);
+                        builder.setMessage(R.string.login_remove_message);
+                        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mAdapter.removeChild(position);
+                            }
+                        });
+                        builder.setNegativeButton(android.R.string.cancel, null);
+                        builder.create().show();
+                        break;
+                }
+                return false;
+            }
+        });
+        popupMenu.show();
     }
 }
