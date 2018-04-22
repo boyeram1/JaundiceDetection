@@ -127,8 +127,11 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
                 }).addCallback(new Snackbar.Callback() {
                     @Override
                     public void onDismissed(Snackbar snackbar, int event) {
-                        if(event != Snackbar.Callback.DISMISS_EVENT_ACTION && event != Snackbar.Callback.DISMISS_EVENT_CONSECUTIVE) {
+                        if(event == Snackbar.Callback.DISMISS_EVENT_SWIPE ||
+                                event == Snackbar.Callback.DISMISS_EVENT_CONSECUTIVE ||
+                                event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT) {
                             mFamiliesRef.child(family.getKey()).removeValue();
+                            FirebaseDatabase.getInstance().getReference("children").child(family.getKey()).removeValue();
                         }
                     }
                 }).show();
