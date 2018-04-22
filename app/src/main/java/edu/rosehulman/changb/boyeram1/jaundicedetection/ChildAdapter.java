@@ -4,12 +4,20 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 
 /**
@@ -21,24 +29,18 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
     private RecyclerView mRecyclerView;
 
     private Callback mCallback;
-
-    private String[] childNames = new String[]{ "Joe", "Josh" };
+    private DatabaseReference mChildrenRef;
 
     public ChildAdapter(Callback callback, RecyclerView recyclerView) {
         mCallback = callback;
         mRecyclerView = recyclerView;
 
-        // TODO: remove this for-loop once connected to Firebase
-        for(int i = 0; i < childNames.length; i++) {
-            addChild(new Child(childNames[i], new BirthDateTime(13, 10, 2018, 14, 5)));
-        }
+        mChildrenRef = FirebaseDatabase.getInstance().getReference().child("children");
+        mChildrenRef.addChildEventListener(new ChildrenChildEventListener());
     }
 
     public void addChild(Child newChild) {
-        mChildren.add(0, newChild);
-        notifyItemInserted(0);
-        notifyItemRangeChanged(0, mChildren.size());
-        mRecyclerView.getLayoutManager().scrollToPosition(0);
+        mChildrenRef.push().setValue(newChild);
     }
 
     public void removeChild(int position) {
@@ -59,6 +61,58 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
         holder.mNameTextView.setText(child.getName());
         holder.mBirthDateTextView.setText(child.getBirthDateTime().dateToString());
         holder.mBirthTimeTextView.setText(child.getBirthDateTime().timeToString());
+    }
+
+    class ChildrenChildEventListener implements ChildEventListener {
+
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            Child child = dataSnapshot.getValue(Child.class);
+            child.setKey(dataSnapshot.getKey());
+            mChildren.add(0, child);
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            String key = dataSnapshot.getKey();
+            Child updatedChild = dataSnapshot.getValue(Child.class);
+
+            int i = 0;
+            for(Child child : mChildren) {
+                if(child.getKey().equals(key)) {
+                    child.setValues(updatedChild);
+                    notifyItemChanged(i);
+                    return;
+                }
+                i++;
+            }
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+            String key = dataSnapshot.getKey();
+
+            int i = 0;
+            for(Child child : mChildren) {
+                if(child.getKey().equals(key)) {
+                    mChildren.remove(i);
+                    notifyItemRemoved(i);
+                    return;
+                }
+                i++;
+            }
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            // empty
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Log.d("JD", "Database error: " + databaseError);
+        }
     }
 
     @Override
