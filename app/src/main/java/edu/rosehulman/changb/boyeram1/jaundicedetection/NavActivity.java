@@ -105,14 +105,16 @@ public class NavActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_child_list:
-                switchTo = new ChildListFragment();
+                final ChildListFragment childListFragment = new ChildListFragment();
+                childListFragment.setNavActivityCallback(this);
+                switchTo = childListFragment;
+
                 setTitle(getResources().getString(R.string.family_format, mFamily.getName()));
                 mFab.show();
                 mFab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Snackbar.make(view, "Replace with adding child", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
+                        childListFragment.showAddEditDialog(null);
                     }
                 });
                 mFab.setImageResource(R.drawable.ic_child_add);
