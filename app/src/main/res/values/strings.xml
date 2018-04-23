@@ -6,6 +6,7 @@
     <string name="add_family_dialog_title">Enter family information</string>
     <string name="add_child_dialog_title">Enter child information</string>
     <string name="login_remove_title">Remove</string>
+    <string name="loginTitle">Tap family to login</string>
 
     <!-- Messages -->
     <string name="login_remove_message">Are you sure?</string>
@@ -24,4 +25,14 @@
     <string name="hint_name">Name</string>
     <string name="hint_day">Day</string>
     <string name="hint_time">Time</string>
+    <string name="title_activity_nav">NavActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_info">Jaundice Info</string>
+    <string name="nav_logout">Logout</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_child_list">Child List</string>
+    <string name="nav_test_list">Test List</string>
+
 </resources>

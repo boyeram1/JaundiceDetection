@@ -18,6 +18,9 @@ import android.widget.EditText;
 
 import com.google.firebase.database.FirebaseDatabase;
 
+import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.FamilyAdapter;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Family;
+
 public class LoginActivity extends AppCompatActivity implements FamilyAdapter.FamilyCallback {
 
     protected static final String EXTRA_FAMILY = "FAMILY_NAME";
@@ -48,6 +51,7 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Fa
         view.setHasFixedSize(true);
         this.mFamilyAdapter = new FamilyAdapter(this, view);
         view.setAdapter(this.mFamilyAdapter);
+        setTitle(getString(R.string.loginTitle));
     }
 
     public void showAddEditDialog(final Family family) {
@@ -101,7 +105,7 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Fa
     @Override
     public void onSelect(Family family) {
         Log.d("Family onSelect", family.getName() + " selected");
-        Intent intent = new Intent(this, FamilyActivity.class);
+        Intent intent = new Intent(this, NavActivity.class);
         intent.putExtra(EXTRA_FAMILY, family);
         startActivity(intent);
     }

@@ -1,4 +1,4 @@
-package edu.rosehulman.changb.boyeram1.jaundicedetection;
+package edu.rosehulman.changb.boyeram1.jaundicedetection.adapters;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -22,6 +22,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import edu.rosehulman.changb.boyeram1.jaundicedetection.R;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Family;
 
 /**
  * Created by changb on 4/15/2018.

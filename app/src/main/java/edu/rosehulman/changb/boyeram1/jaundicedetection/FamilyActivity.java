@@ -19,6 +19,11 @@ import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.TimePicker;
 
+import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.ChildAdapter;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.BirthDateTime;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Child;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Family;
+
 public class FamilyActivity extends AppCompatActivity implements ChildAdapter.Callback {
 
     private String mKeyOfFamilyOfChild;

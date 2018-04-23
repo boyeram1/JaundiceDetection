@@ -1,4 +1,4 @@
-package edu.rosehulman.changb.boyeram1.jaundicedetection;
+package edu.rosehulman.changb.boyeram1.jaundicedetection.adapters;
 
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +14,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+
+import edu.rosehulman.changb.boyeram1.jaundicedetection.R;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.BirthDateTime;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Child;
 
 /**
  * Created by boyeram on 4/16/18.

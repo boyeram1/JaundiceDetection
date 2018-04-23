@@ -1,4 +1,4 @@
-package edu.rosehulman.changb.boyeram1.jaundicedetection;
+package edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects;
 
 import android.os.Parcel;
 import android.os.Parcelable;
