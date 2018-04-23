@@ -27,15 +27,16 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
     final ArrayList<Child> mChildren = new ArrayList<>();
     private RecyclerView mRecyclerView;
 
-    private Callback mCallback;
+    private NavActivityCallback mCallback;
     private DatabaseReference mChildrenRef;
 
-    public ChildAdapter(Callback callback, RecyclerView recyclerView) {
+    public ChildAdapter(NavActivityCallback callback, RecyclerView recyclerView) {
         mCallback = callback;
         mRecyclerView = recyclerView;
 
         mChildrenRef = FirebaseDatabase.getInstance().getReference("children").child(mCallback.getKeyOfFamilyOfChild());
         mChildrenRef.addChildEventListener(new ChildrenChildEventListener());
+        mChildrenRef.keepSynced(true);
     }
 
     public void addChild(Child newChild) {
@@ -45,7 +46,7 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
     public void removeChild(final int position) {
         final Child child = this.mChildren.get(position);
         mChildren.remove(position);
-        notifyDataSetChanged();
+        notifyItemRemoved(position);
 
         Snackbar.make(this.mRecyclerView, child.getName() + " removed", Snackbar.LENGTH_LONG)
                 .setAction("UNDO", new View.OnClickListener() {
@@ -53,13 +54,14 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
                     public void onClick(View v) {
                         if (child != null) {
                             mChildren.add(position, child);
-                            notifyDataSetChanged();
+                            notifyItemInserted(position);
                             Snackbar.make(mRecyclerView, child.getName() + " restored", Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 }).addCallback(new Snackbar.Callback() {
             @Override
             public void onDismissed(Snackbar snackbar, int event) {
+                Log.d("ChildAdapter", "Snackbar dismissed: " + event);
                 if(event != Snackbar.Callback.DISMISS_EVENT_ACTION && event != Snackbar.Callback.DISMISS_EVENT_CONSECUTIVE) {
                     mChildrenRef.child(child.getKey()).removeValue();
                 }
@@ -143,7 +145,7 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
         return mChildren.size();
     }
 
-    public interface Callback {
+    public interface NavActivityCallback {
         void showEditRemovePopup(Child child, View v, int position);
         String getKeyOfFamilyOfChild();
     }
@@ -167,6 +169,7 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
         @Override
         public void onClick(View v) {
             // opens the next activity/fragment
+
         }
 
         @Override

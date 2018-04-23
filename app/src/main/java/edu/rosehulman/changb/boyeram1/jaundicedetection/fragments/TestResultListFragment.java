@@ -16,12 +16,12 @@ import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResult;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link TestResultListFragment.Callback} interface
+ * {@link TestResultAdapter.Callback} interface
  * to handle interaction events.
  */
 public class TestResultListFragment extends Fragment {
 
-    private Callback mCallback;
+    private TestResultAdapter.Callback mCallback;
 
     public TestResultListFragment() {
         // Required empty public constructor
@@ -42,11 +42,11 @@ public class TestResultListFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof Callback) {
-            mCallback = (Callback) context;
+        if (context instanceof TestResultAdapter.Callback) {
+            mCallback = (TestResultAdapter.Callback) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement TesetResultListFragment.Callback");
+                    + " must implement TestResultListFragment.NavActivityCallback");
         }
     }
 
@@ -68,8 +68,5 @@ public class TestResultListFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface Callback {
-        // TODO: Update argument type and name
-        void onTestSelected(TestResult testResult);
-    }
+
 }

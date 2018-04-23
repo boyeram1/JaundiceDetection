@@ -24,9 +24,9 @@ public class TestResultAdapter extends RecyclerView.Adapter<TestResultAdapter.Vi
 
     private Context mContext;
     private List<TestResult> mTestResults;
-    private TestResultListFragment.Callback mCallback;
+    private Callback mCallback;
 
-    public TestResultAdapter(Context context, TestResultListFragment.Callback callback) {
+    public TestResultAdapter(Context context, Callback callback) {
         this.mCallback = callback;
         this.mTestResults = new ArrayList<>();
         this.mContext = context;
@@ -51,6 +51,11 @@ public class TestResultAdapter extends RecyclerView.Adapter<TestResultAdapter.Vi
     @Override
     public int getItemCount() {
         return mTestResults.size();
+    }
+
+    public interface Callback {
+        // TODO: Update argument type and name
+        void onTestSelected(TestResult testResult);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

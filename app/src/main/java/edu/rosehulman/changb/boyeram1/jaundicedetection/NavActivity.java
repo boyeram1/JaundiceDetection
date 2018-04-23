@@ -17,15 +17,18 @@ import android.view.MenuItem;
 import android.view.View;
 
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.ChildAdapter;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.TestResultAdapter;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.fragments.ChildListFragment;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.fragments.TestResultListFragment;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Child;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Family;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResult;
 
 public class NavActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, TestResultListFragment.Callback, ChildAdapter.Callback {
+        implements NavigationView.OnNavigationItemSelectedListener, TestResultAdapter.Callback, ChildAdapter.NavActivityCallback {
 
     private String mKeyOfFamilyOfChild;
+    private FloatingActionButton mFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +41,7 @@ public class NavActivity extends AppCompatActivity
         Family family = intent.getParcelableExtra(LoginActivity.EXTRA_FAMILY);
         mKeyOfFamilyOfChild = family.getKey();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_nav);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        mFab = (FloatingActionButton) findViewById(R.id.fab_nav);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -55,11 +51,13 @@ public class NavActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-//        if (savedInstanceState == null) {
-//            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//            ft.add(R.id.fragment_container, new AboutFragment());
-//            ft.commit();
-//        }
+        if (savedInstanceState == null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ChildListFragment childListFragment = new ChildListFragment();
+            childListFragment.setNavActivityCallback(this);
+            ft.add(R.id.fragment_container, childListFragment);
+            ft.commit();
+        }
         String familyName = family.getName();
 //        TextView textView = (TextView)findViewById(R.id.nav_family_name);
 //        textView.setText(familyName);
@@ -106,14 +104,31 @@ public class NavActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_child_list:
+                mFab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Snackbar.make(view, "Replace with adding child", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    }
+                });
+                mFab.setImageResource(R.drawable.ic_child_add);
                 break;
             case R.id.nav_test_list:
                 switchTo = new TestResultListFragment();
+                mFab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Snackbar.make(view, "Replace with adding test", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    }
+                });
+                mFab.setImageResource(R.drawable.ic_library_add);
                 break;
             case R.id.nav_settings:
                 startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
                 break;
             case R.id.nav_info:
+                mFab.hide();
                 break;
             case R.id.nav_logout:
                 super.onBackPressed();
@@ -133,17 +148,17 @@ public class NavActivity extends AppCompatActivity
     }
 
     @Override
-    public void onTestSelected(TestResult testResult) {
-
-    }
-
-    @Override
     public void showEditRemovePopup(Child child, View v, int position) {
 
     }
 
     @Override
     public String getKeyOfFamilyOfChild() {
-        return null;
+        return mKeyOfFamilyOfChild;
+    }
+
+    @Override
+    public void onTestSelected(TestResult testResult) {
+
     }
 }

@@ -1,17 +1,12 @@
 package edu.rosehulman.changb.boyeram1.jaundicedetection.adapters;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.google.firebase.database.ChildEventListener;
@@ -33,12 +28,12 @@ import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Family;
 public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder> {
 
     private List<Family> mFamilies;
-    private FamilyCallback mFamilyCallback;
+    private LoginActivityCallback mFamilyAdapterCallback;
     private RecyclerView mRecyclerView;
     private DatabaseReference mFamiliesRef;
 
-    public FamilyAdapter(FamilyCallback familyCallback, RecyclerView view) {
-        this.mFamilyCallback = familyCallback;
+    public FamilyAdapter(LoginActivityCallback familyCallback, RecyclerView view) {
+        this.mFamilyAdapterCallback = familyCallback;
         this.mFamilies = new ArrayList<>();
         this.mRecyclerView = view;
 
@@ -68,71 +63,29 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         final Family family = mFamilies.get(position);
         holder.mNameTextView.setText(family.getName());
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("Family Click", family.getName() + " selected");
-                mFamilyCallback.onSelect(family);
-            }
-        });
-
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                PopupMenu popupMenu = new PopupMenu((Context) mFamilyCallback, v);
-                popupMenu.inflate(R.menu.popup_edit_remove);
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.menu_popup_edit:
-                                mFamilyCallback.onEdit(family);
-                                break;
-                            case R.id.menu_popup_remove:
-                                AlertDialog.Builder builder = new AlertDialog.Builder((Context) mFamilyCallback);
-                                builder.setTitle(R.string.login_remove_title);
-                                builder.setMessage(R.string.login_remove_message);
-                                builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        remove(holder.getAdapterPosition());
-                                    }
-                                });
-                                builder.setNegativeButton(android.R.string.cancel, null);
-                                builder.create().show();
-                                break;
-                        }
-                        return false;
-                    }
-                });
-                popupMenu.show();
-                return true;
-            }
-        });
     }
 
     public void remove(final int position){
         final Family family = this.mFamilies.get(position);
         mFamilies.remove(position);
-        notifyDataSetChanged();
+        notifyItemRemoved(position);
 
         Snackbar.make(this.mRecyclerView, family.getName() + " family removed", Snackbar.LENGTH_LONG)
                 .setAction("UNDO", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (family != null) {
+                            Log.d("FamilyAdapter", "");
                             mFamilies.add(position, family);
-                            notifyDataSetChanged();
+                            notifyItemInserted(position);
                             Snackbar.make(mRecyclerView, family.getName() + " family restored", Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 }).addCallback(new Snackbar.Callback() {
                     @Override
                     public void onDismissed(Snackbar snackbar, int event) {
-                        if(event == Snackbar.Callback.DISMISS_EVENT_SWIPE ||
-                                event == Snackbar.Callback.DISMISS_EVENT_CONSECUTIVE ||
-                                event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT) {
+                        Log.d("FamilyAdapter", "Snackbar dismissed: " + event);
+                        if(event != Snackbar.Callback.DISMISS_EVENT_ACTION && event != Snackbar.Callback.DISMISS_EVENT_CONSECUTIVE) {
                             mFamiliesRef.child(family.getKey()).removeValue();
                             FirebaseDatabase.getInstance().getReference("children").child(family.getKey()).removeValue();
                         }
@@ -173,6 +126,7 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
 
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
+            Log.d("FamilyAdapter", "child removed");
             String keyToRemove = dataSnapshot.getKey();
             int i = 0;
             for (Family fam : mFamilies) {
@@ -196,18 +150,33 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
         }
     }
 
-    public interface FamilyCallback {
+    public interface LoginActivityCallback {
         public void onSelect(Family family);
         public void onEdit(Family family);
+        void showEditRemovePopup(Family family, View v, int position);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         private TextView mNameTextView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mNameTextView = (TextView) itemView.findViewById(R.id.family_name_text_view);
+
+            itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            mFamilyAdapterCallback.onSelect(mFamilies.get(getAdapterPosition()));
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            mFamilyAdapterCallback.showEditRemovePopup(mFamilies.get(getAdapterPosition()), v, getAdapterPosition());
+            return true;
         }
     }
 

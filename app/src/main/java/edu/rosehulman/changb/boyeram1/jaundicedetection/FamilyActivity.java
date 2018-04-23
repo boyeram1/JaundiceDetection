@@ -14,6 +14,7 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.PopupMenu;
@@ -24,7 +25,7 @@ import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.BirthDateTi
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Child;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Family;
 
-public class FamilyActivity extends AppCompatActivity implements ChildAdapter.Callback {
+public class FamilyActivity extends AppCompatActivity implements ChildAdapter.NavActivityCallback {
 
     private String mKeyOfFamilyOfChild;
     private ChildAdapter mAdapter;
@@ -54,6 +55,8 @@ public class FamilyActivity extends AppCompatActivity implements ChildAdapter.Ca
         recyclerView.setHasFixedSize(true);
         mAdapter = new ChildAdapter(this, recyclerView);
         recyclerView.setAdapter(mAdapter);
+        String familyName = family.getName();
+        setTitle(getResources().getString(R.string.family_format, familyName));
     }
 
     protected void showAddEditDialog(final Child child) {
@@ -132,8 +135,9 @@ public class FamilyActivity extends AppCompatActivity implements ChildAdapter.Ca
                 }
             }
         });
-        builder.setNegativeButton(android.R.string.cancel, null);
-        builder.create().show();
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        dialog.show();
     }
 
     private void showDatePickerDialog(final BirthDateTime birthDateTime, final EditText dateEditText) {

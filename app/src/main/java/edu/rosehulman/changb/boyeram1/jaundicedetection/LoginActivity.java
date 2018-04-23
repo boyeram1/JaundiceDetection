@@ -1,5 +1,6 @@
 package edu.rosehulman.changb.boyeram1.jaundicedetection;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,16 +13,18 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.PopupMenu;
 
 import com.google.firebase.database.FirebaseDatabase;
 
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.FamilyAdapter;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Family;
 
-public class LoginActivity extends AppCompatActivity implements FamilyAdapter.FamilyCallback {
+public class LoginActivity extends AppCompatActivity implements FamilyAdapter.LoginActivityCallback {
 
     protected static final String EXTRA_FAMILY = "FAMILY_NAME";
 
@@ -34,9 +37,7 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Fa
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if (savedInstanceState == null) {
-            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-        }
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_login);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -105,13 +106,46 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Fa
     @Override
     public void onSelect(Family family) {
         Log.d("Family onSelect", family.getName() + " selected");
-        Intent intent = new Intent(this, FamilyActivity.class);
+        Intent intent = new Intent(this, NavActivity.class);
         intent.putExtra(EXTRA_FAMILY, family);
         startActivity(intent);
     }
 
     @Override
     public void onEdit(Family family) {
+        Log.d("Family onEdit ", family.getName() + " selected");
         showAddEditDialog(family);
+    }
+
+    @Override
+    public void showEditRemovePopup(final Family family, View v, final int position) {
+        Log.d("Family showEditPopup ", family.getName() + " selected");
+        PopupMenu popupMenu = new PopupMenu((Context) LoginActivity.this, v);
+        popupMenu.inflate(R.menu.popup_edit_remove);
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menu_popup_edit:
+                        LoginActivity.this.onEdit(family);
+                        break;
+                    case R.id.menu_popup_remove:
+                        AlertDialog.Builder builder = new AlertDialog.Builder((Context) LoginActivity.this );
+                        builder.setTitle(R.string.login_remove_title);
+                        builder.setMessage(R.string.login_remove_message);
+                        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mFamilyAdapter.remove(position);
+                            }
+                        });
+                        builder.setNegativeButton(android.R.string.cancel, null);
+                        builder.create().show();
+                        break;
+                }
+                return false;
+            }
+        });
+        popupMenu.show();
     }
 }
