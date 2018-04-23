@@ -29,6 +29,7 @@ public class NavActivity extends AppCompatActivity
 
     private String mKeyOfFamilyOfChild;
     private FloatingActionButton mFab;
+    private Family mFamily;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +39,8 @@ public class NavActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
-        Family family = intent.getParcelableExtra(LoginActivity.EXTRA_FAMILY);
-        mKeyOfFamilyOfChild = family.getKey();
+        mFamily = intent.getParcelableExtra(LoginActivity.EXTRA_FAMILY);
+        mKeyOfFamilyOfChild = mFamily.getKey();
 
         mFab = (FloatingActionButton) findViewById(R.id.fab_nav);
 
@@ -58,7 +59,7 @@ public class NavActivity extends AppCompatActivity
             ft.add(R.id.fragment_container, childListFragment);
             ft.commit();
         }
-        String familyName = family.getName();
+        String familyName = mFamily.getName();
 //        TextView textView = (TextView)findViewById(R.id.nav_family_name);
 //        textView.setText(familyName);
         setTitle(getResources().getString(R.string.family_format, familyName));
@@ -104,6 +105,9 @@ public class NavActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_child_list:
+                switchTo = new ChildListFragment();
+                setTitle(getResources().getString(R.string.family_format, mFamily.getName()));
+                mFab.show();
                 mFab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -115,6 +119,7 @@ public class NavActivity extends AppCompatActivity
                 break;
             case R.id.nav_test_list:
                 switchTo = new TestResultListFragment();
+                mFab.show();
                 mFab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
