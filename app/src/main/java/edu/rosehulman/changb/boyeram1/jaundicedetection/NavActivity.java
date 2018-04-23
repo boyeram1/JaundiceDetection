@@ -1,10 +1,12 @@
 package edu.rosehulman.changb.boyeram1.jaundicedetection;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -12,9 +14,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.ChildAdapter;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.fragments.TestResultListFragment;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Child;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Family;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResult;
 
 public class NavActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, TestResultListFragment.Callback, ChildAdapter.Callback {
+
+    private String mKeyOfFamilyOfChild;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +34,11 @@ public class NavActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        Intent intent = getIntent();
+        Family family = intent.getParcelableExtra(LoginActivity.EXTRA_FAMILY);
+        mKeyOfFamilyOfChild = family.getKey();
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_nav);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -40,6 +55,16 @@ public class NavActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+//        if (savedInstanceState == null) {
+//            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//            ft.add(R.id.fragment_container, new AboutFragment());
+//            ft.commit();
+//        }
+        String familyName = family.getName();
+//        TextView textView = (TextView)findViewById(R.id.nav_family_name);
+//        textView.setText(familyName);
+        setTitle(getResources().getString(R.string.family_format, familyName));
+
     }
 
     @Override
@@ -65,9 +90,8 @@ public class NavActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
             return true;
         }
 
@@ -78,22 +102,48 @@ public class NavActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+        Fragment switchTo = null;
         int id = item.getItemId();
-
-        if (id == R.id.nav_child_list) {
-            // Handle the camera action
-        } else if (id == R.id.nav_test_list) {
-
-        } else if (id == R.id.nav_info) {
-
-        } else if (id == R.id.nav_settings) {
-
-        } else if (id == R.id.nav_logout) {
-
+        switch (id) {
+            case R.id.nav_child_list:
+                break;
+            case R.id.nav_test_list:
+                switchTo = new TestResultListFragment();
+                break;
+            case R.id.nav_settings:
+                startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                break;
+            case R.id.nav_info:
+                break;
+            case R.id.nav_logout:
+                super.onBackPressed();
+                break;
         }
-
+        if (switchTo != null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.fragment_container, switchTo);
+            for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
+                getSupportFragmentManager().popBackStackImmediate();
+            }
+            ft.commit();
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onTestSelected(TestResult testResult) {
+
+    }
+
+    @Override
+    public void showEditRemovePopup(Child child, View v, int position) {
+
+    }
+
+    @Override
+    public String getKeyOfFamilyOfChild() {
+        return null;
     }
 }

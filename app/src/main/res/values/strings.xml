@@ -31,8 +31,9 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_info">Jaundice Info</string>
     <string name="nav_logout">Logout</string>
-    <string name="nav_settings">Settings</string>
+    <string name="nav_settings">App Settings</string>
     <string name="nav_child_list">Child List</string>
     <string name="nav_test_list">Test List</string>
+    <string name="family_format">%s Family</string>
 
 </resources>

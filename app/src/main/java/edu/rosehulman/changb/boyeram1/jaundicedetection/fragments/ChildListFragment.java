@@ -10,20 +10,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import edu.rosehulman.changb.boyeram1.jaundicedetection.R;
-import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.TestResultsAdapter;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResult;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link TestResultsFragment.Callback} interface
+ * {@link TestResultListFragment.Callback} interface
  * to handle interaction events.
  */
-public class TestResultsFragment extends Fragment {
+public class ChildListFragment extends Fragment {
 
     private Callback mCallback;
 
-    public TestResultsFragment() {
+    public ChildListFragment() {
         // Required empty public constructor
     }
 
@@ -32,10 +31,10 @@ public class TestResultsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        RecyclerView view = (RecyclerView)inflater.inflate(R.layout.fragment_test_results, container, false);
+        RecyclerView view = (RecyclerView)inflater.inflate(R.layout.fragment_recycler_list, container, false);
         view.setLayoutManager(new LinearLayoutManager(getContext()));
-        TestResultsAdapter adapter = new TestResultsAdapter(getContext(), mCallback);
-        view.setAdapter(adapter);
+//        ChildAdapter adapter = new ChildAdapter(this)
+//        view.setAdapter(adapter);
         return view;
     }
 
@@ -46,7 +45,7 @@ public class TestResultsFragment extends Fragment {
             mCallback = (Callback) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement DocListFragment.Callback");
+                    + " must implement TestResultListFragment.Callback");
         }
     }
 

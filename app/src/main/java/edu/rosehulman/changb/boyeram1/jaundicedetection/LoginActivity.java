@@ -105,7 +105,7 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Fa
     @Override
     public void onSelect(Family family) {
         Log.d("Family onSelect", family.getName() + " selected");
-        Intent intent = new Intent(this, NavActivity.class);
+        Intent intent = new Intent(this, FamilyActivity.class);
         intent.putExtra(EXTRA_FAMILY, family);
         startActivity(intent);
     }
