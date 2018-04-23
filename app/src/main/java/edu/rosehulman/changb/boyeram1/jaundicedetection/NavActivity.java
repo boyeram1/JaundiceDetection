@@ -114,19 +114,21 @@ public class NavActivity extends AppCompatActivity
                 mFab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        childListFragment.showAddEditDialog(null);
+                        childListFragment.onFABClicked();
                     }
                 });
                 mFab.setImageResource(R.drawable.ic_child_add);
                 break;
             case R.id.nav_test_list:
-                switchTo = new TestResultListFragment();
+                final TestResultListFragment testResultListFragment = new TestResultListFragment();
+                testResultListFragment.setNavActivityCallback(this);
+                switchTo = testResultListFragment;
+
                 mFab.show();
                 mFab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Snackbar.make(view, "Replace with adding test", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
+                        testResultListFragment.onFABClicked();
                     }
                 });
                 mFab.setImageResource(R.drawable.ic_library_add);
