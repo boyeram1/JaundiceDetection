@@ -52,6 +52,10 @@ public class ChildListFragment extends Fragment {
         return recyclerView;
     }
 
+    public void onFABClicked() {
+        showAddEditDialog(null);
+    }
+
     public void showAddEditDialog(final Child child) {
         AlertDialog.Builder builder = new AlertDialog.Builder((Context)mNavActivityCallback);
         builder.setTitle(R.string.add_child_dialog_title);
