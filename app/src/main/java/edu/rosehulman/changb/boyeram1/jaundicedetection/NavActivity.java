@@ -54,8 +54,15 @@ public class NavActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         if (savedInstanceState == null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ChildListFragment childListFragment = new ChildListFragment();
+            final ChildListFragment childListFragment = new ChildListFragment();
             childListFragment.setNavActivityCallback(this);
+            mFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    childListFragment.showAddEditDialog(null);
+                }
+            });
+            mFab.setImageResource(R.drawable.ic_child_add);
             ft.add(R.id.fragment_container, childListFragment);
             ft.commit();
         }
@@ -108,7 +115,6 @@ public class NavActivity extends AppCompatActivity
                 final ChildListFragment childListFragment = new ChildListFragment();
                 childListFragment.setNavActivityCallback(this);
                 switchTo = childListFragment;
-
                 setTitle(getResources().getString(R.string.family_format, mFamily.getName()));
                 mFab.show();
                 mFab.setOnClickListener(new View.OnClickListener() {
