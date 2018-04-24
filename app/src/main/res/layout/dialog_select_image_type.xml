@@ -13,23 +13,31 @@
         android:padding="20dp">
 
         <Button
-            android:id="@+id/button_camera"
+            android:id="@+id/button_eye"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="@string/take_picture"
+            android:text="@string/eye"
             android:layout_marginBottom="20dp"
-            android:drawableLeft="@drawable/ic_photo_camera_black_24dp"/>
+            android:drawableLeft="@drawable/ic_remove_red_eye_black_24dp"/>
 
         <Button
-            android:id="@+id/button_upload"
+            android:id="@+id/button_palm"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="@string/upload_picture"
+            android:text="@string/palm"
             android:layout_marginBottom="20dp"
-            android:drawableLeft="@drawable/ic_file_upload_black_24dp"/>
+            android:drawableLeft="@drawable/ic_hand"/>
 
         <Button
-            android:id="@+id/button_cancel_add_test"
+            android:id="@+id/button_foot"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="@string/foot"
+            android:layout_marginBottom="20dp"
+            android:drawableLeft="@drawable/ic_foot"/>
+
+        <Button
+            android:id="@+id/button_cancel_select_image"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="@android:string/cancel"

@@ -3,61 +3,84 @@ package edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.database.Exclude;
+
 /**
  * Created by changb on 4/22/2018.
  */
 
-public class TestResult implements Parcelable {
+public class TestResult {
 
     private String key;
-    private String childName;
-    private int percentage;
     private TestResultTime testResultTime;
+    private Photo eyePhoto;
+    private Photo palmPhoto;
+    private Photo footPhoto;
+    private int result;
 
-    protected TestResult(Parcel in) {
-        this.key = in.readString();
-        this.childName = in.readString();
-        this.percentage = in.readInt();
-        this.testResultTime = in.readParcelable(TestResultTime.class.getClassLoader());
+
+    public TestResult(TestResultTime testResultTime, Photo eyePhoto, Photo palmPhoto, Photo footPhoto, int result) {
+        this.testResultTime = testResultTime;
+        this.eyePhoto = eyePhoto;
+        this.palmPhoto = palmPhoto;
+        this.footPhoto = footPhoto;
+        this.result = result;
     }
 
-    public TestResult(String key, String childName, int percentage, TestResultTime testResultTime) {
+    @Exclude
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
         this.key = key;
-        this.childName = childName;
-        this.percentage = percentage;
+    }
+
+    public TestResultTime getTestResultTime() {
+        return testResultTime;
+    }
+
+    public void setTestResultTime(TestResultTime testResultTime) {
         this.testResultTime = testResultTime;
     }
 
-    public String getChildName() {
-        return childName;
+    public Photo getEyePhoto() {
+        return eyePhoto;
     }
 
-    public int getPercentage() {
-        return percentage;
+    public void setEyePhoto(Photo eyePhoto) {
+        this.eyePhoto = eyePhoto;
     }
 
-    public static final Creator<TestResult> CREATOR = new Creator<TestResult>() {
-        @Override
-        public TestResult createFromParcel(Parcel in) {
-            return new TestResult(in);
-        }
-
-        @Override
-        public TestResult[] newArray(int size) {
-            return new TestResult[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
+    public Photo getPalmPhoto() {
+        return palmPhoto;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(key);
-        dest.writeString(childName);
-        dest.writeInt(percentage);
-        dest.writeParcelable(testResultTime, flags);
+    public void setPalmPhoto(Photo palmPhoto) {
+        this.palmPhoto = palmPhoto;
+    }
+
+    public Photo getFootPhoto() {
+        return footPhoto;
+    }
+
+    public void setFootPhoto(Photo footPhoto) {
+        this.footPhoto = footPhoto;
+    }
+
+    public int getResult() {
+        return result;
+    }
+
+    public void setResult(int result) {
+        this.result = result;
+    }
+
+    public void setValues(TestResult testResult) {
+        this.testResultTime = testResult.getTestResultTime();
+        this.eyePhoto = testResult.getEyePhoto();
+        this.palmPhoto = testResult.getPalmPhoto();
+        this.footPhoto = testResult.getFootPhoto();
+        this.result = testResult.getResult();
     }
 }

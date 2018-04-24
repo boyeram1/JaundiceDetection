@@ -30,8 +30,6 @@ public class TestResultAdapter extends RecyclerView.Adapter<TestResultAdapter.Vi
         this.mCallback = callback;
         this.mTestResults = new ArrayList<>();
         this.mContext = context;
-        mTestResults.add(new TestResult("0", "Abe", 1, new TestResultTime(1,1,1,1,1)));
-        mTestResults.add(new TestResult("1", "Blinkin", 100, new TestResultTime(2,3,4,5,6)));
     }
 
     @Override
@@ -44,8 +42,6 @@ public class TestResultAdapter extends RecyclerView.Adapter<TestResultAdapter.Vi
     @Override
     public void onBindViewHolder(TestResultAdapter.ViewHolder holder, int position) {
         final TestResult testResult = mTestResults.get(position);
-        holder.mTestResultChildName.setText(testResult.getChildName());
-        holder.mTestResultPercentage.setText(Integer.toString(testResult.getPercentage()));
     }
 
     @Override

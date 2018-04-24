@@ -38,5 +38,8 @@
     <string name="new_test_dialog_title">Add a New Test</string>
     <string name="take_picture">Take picture</string>
     <string name="upload_picture">Upload picture</string>
+    <string name="eye">Eye</string>
+    <string name="palm">Palm</string>
+    <string name="foot">Foot</string>
 
 </resources>

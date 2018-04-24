@@ -2,8 +2,14 @@ package edu.rosehulman.changb.boyeram1.jaundicedetection.fragments;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +18,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 
 import edu.rosehulman.changb.boyeram1.jaundicedetection.NavActivity;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.R;
@@ -25,11 +36,20 @@ import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResult;
  * {@link TestResultAdapter.Callback} interface
  * to handle interaction events.
  */
-public class TestResultListFragment extends Fragment implements INavDrawerFragment {
+public class TestResultListFragment extends Fragment implements INavDrawerFragment, View.OnClickListener {
 
     private TestResultAdapter.Callback mCallback;
     private NavActivity mNavActivityCallback;
     private TestResultAdapter mAdapter;
+
+    private View mAddNewTestBuilderView;
+    private AlertDialog mAddNewTestDialog;
+
+    private View mSelectPhotoTypeBuilderView;
+    private AlertDialog.Builder mSelectPhotoTypeBuilder;
+    private AlertDialog mSelectPhotoTypeDialog;
+
+    private static final int CAMERA_PIC_REQUEST = 1337;
 
     public TestResultListFragment() {
         // Required empty public constructor
@@ -79,27 +99,78 @@ public class TestResultListFragment extends Fragment implements INavDrawerFragme
         AlertDialog.Builder builder = new AlertDialog.Builder((Context)mNavActivityCallback);
         builder.setTitle(getString(R.string.new_test_dialog_title));
 
-        final View view = getLayoutInflater().inflate(R.layout.dialog_add_test, null, false);
-        builder.setView(view);
+        mAddNewTestBuilderView = getLayoutInflater().inflate(R.layout.dialog_add_test, null, false);
+        builder.setView(mAddNewTestBuilderView);
 
-        Button cameraButton = view.findViewById(R.id.button_camera);
-        cameraButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // open camera here
-                Log.d("AddNewTestDialog", "User chose to take a new image.");
-            }
-        });
+        mAddNewTestDialog = builder.create();
 
-        Button uploadButton = view.findViewById(R.id.button_upload);
-        uploadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // allow user to select an image
-                Log.d("AddNewTestDialog", "User chose to select an image from their gallery.");
-            }
-        });
+        Button cameraButton = mAddNewTestBuilderView.findViewById(R.id.button_camera);
+        cameraButton.setOnClickListener(this);
 
-        builder.create().show();
+        Button uploadButton = mAddNewTestBuilderView.findViewById(R.id.button_upload);
+        uploadButton.setOnClickListener(this);
+
+        Button cancelAddTest = mAddNewTestBuilderView.findViewById(R.id.button_cancel_add_test);
+        cancelAddTest.setOnClickListener(this);
+
+        mAddNewTestDialog.show();
+    }
+
+    @Override
+    public void onClick(View view) {
+        int buttonId = view.getId();
+
+        if(mSelectPhotoTypeBuilder == null) {
+            mSelectPhotoTypeBuilder = new AlertDialog.Builder((Context)mNavActivityCallback);
+            mSelectPhotoTypeBuilderView = getLayoutInflater().inflate(R.layout.dialog_select_image_type, null, false);
+            mSelectPhotoTypeBuilder.setView(mSelectPhotoTypeBuilderView);
+
+            Button eyeButton = mSelectPhotoTypeBuilderView.findViewById(R.id.button_eye);
+            eyeButton.setOnClickListener(this);
+
+            Button palmButton = mSelectPhotoTypeBuilderView.findViewById(R.id.button_palm);
+            palmButton.setOnClickListener(this);
+
+            Button footButton = mSelectPhotoTypeBuilderView.findViewById(R.id.button_foot);
+            footButton.setOnClickListener(this);
+
+            Button cancelSelectImageButton = mSelectPhotoTypeBuilderView.findViewById(R.id.button_cancel_select_image);
+            cancelSelectImageButton.setOnClickListener(this);
+
+            mSelectPhotoTypeDialog = mSelectPhotoTypeBuilder.create();
+        }
+
+        switch (buttonId) {
+            case R.id.button_camera:
+                mSelectPhotoTypeDialog.show();
+                break;
+
+            case R.id.button_upload:
+                mSelectPhotoTypeDialog.show();
+                break;
+
+            case R.id.button_cancel_add_test:
+                mAddNewTestDialog.dismiss();
+                break;
+
+            case R.id.button_eye:
+                mSelectPhotoTypeDialog.dismiss();
+                mAddNewTestDialog.dismiss();
+                break;
+
+            case R.id.button_palm:
+                mSelectPhotoTypeDialog.dismiss();
+                mAddNewTestDialog.dismiss();
+                break;
+
+            case R.id.button_foot:
+                mSelectPhotoTypeDialog.dismiss();
+                mAddNewTestDialog.dismiss();
+                break;
+
+            case R.id.button_cancel_select_image:
+                mSelectPhotoTypeDialog.dismiss();
+                break;
+        }
     }
 }
