@@ -20,6 +20,7 @@ import android.widget.TextView;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.ChildAdapter;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.TestResultAdapter;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.fragments.ChildListFragment;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.fragments.InfoFragment;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.fragments.TestResultListFragment;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Child;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Family;
@@ -109,7 +110,6 @@ public class NavActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -148,6 +148,7 @@ public class NavActivity extends AppCompatActivity
                 break;
             case R.id.nav_info:
                 mFab.hide();
+                switchTo = new InfoFragment();
                 break;
             case R.id.nav_logout:
                 super.onBackPressed();

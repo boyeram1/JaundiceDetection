@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.InfoFragment"
+    android:background="@color/colorPrimary">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical"
+        android:fillViewport="true">
+
+        <TextView
+            android:layout_margin="@dimen/margin_card"
+            android:id="@+id/info_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/info_fragement_text"
+            android:textSize="@dimen/info_text_size"
+            android:textColor="@color/white"/>
+    </ScrollView>
+
+</FrameLayout>

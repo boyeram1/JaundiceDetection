@@ -29,6 +29,8 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- Nav Drawer Titles -->
     <string name="nav_info">Jaundice Info</string>
     <string name="nav_logout">Logout</string>
     <string name="nav_settings">App Settings</string>
@@ -36,5 +38,8 @@
     <string name="nav_test_list">Test List</string>
     <string name="family_format">%s Family</string>
     <string name="nav_nearby_doctors">Nearby Doctors</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="info_fragement_text">Blank Text</string>
 
 </resources>
