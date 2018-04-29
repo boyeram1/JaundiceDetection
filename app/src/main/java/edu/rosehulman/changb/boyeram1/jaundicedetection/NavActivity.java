@@ -140,6 +140,9 @@ public class NavActivity extends AppCompatActivity
                 });
                 mFab.setImageResource(R.drawable.ic_library_add);
                 break;
+            case R.id.nav_nearby:
+                mFab.hide();
+                break;
             case R.id.nav_settings:
                 startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
                 break;

@@ -35,5 +35,6 @@
     <string name="nav_child_list">Child List</string>
     <string name="nav_test_list">Test List</string>
     <string name="family_format">%s Family</string>
+    <string name="nav_nearby_doctors">Nearby Doctors</string>
 
 </resources>

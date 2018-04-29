@@ -6,19 +6,23 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_child_list"
-            android:icon="@drawable/ic_people_black_48dp"
+            android:icon="@drawable/ic_people"
             android:title="@string/nav_child_list" />
         <item
             android:id="@+id/nav_test_list"
             android:icon="@drawable/test_tube"
             android:title="@string/nav_test_list" />
         <item
+            android:id="@+id/nav_nearby"
+            android:icon="@drawable/ic_directions"
+            android:title="@string/nav_nearby_doctors" />
+        <item
             android:id="@+id/nav_info"
             android:icon="@android:drawable/ic_dialog_info"
             android:title="@string/nav_info" />
         <item
             android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_settings_black_48dp"
+            android:icon="@drawable/ic_settings"
             android:title="@string/nav_settings" />
         <item
             android:id="@+id/nav_logout"
