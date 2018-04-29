@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.ChildAdapter;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.TestResultAdapter;
@@ -30,6 +31,7 @@ public class NavActivity extends AppCompatActivity
     private String mKeyOfFamilyOfChild;
     private FloatingActionButton mFab;
     private Family mFamily;
+    private ChildListFragment mChildListFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,25 +54,28 @@ public class NavActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.getMenu().getItem(0).setChecked(true);
+        View hView = navigationView.getHeaderView(0);
+        TextView nav_familyName = (TextView) hView.findViewById(R.id.nav_family_name);
+
+        mChildListFragment = new ChildListFragment();
+        mChildListFragment.setNavActivityCallback(this);
+
         if (savedInstanceState == null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            final ChildListFragment childListFragment = new ChildListFragment();
-            childListFragment.setNavActivityCallback(this);
             mFab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    childListFragment.showAddEditDialog(null);
+                    showAddEditDialog(null);
                 }
             });
             mFab.setImageResource(R.drawable.ic_child_add);
-            ft.add(R.id.fragment_container, childListFragment);
+            ft.add(R.id.fragment_container, mChildListFragment);
             ft.commit();
         }
-        String familyName = mFamily.getName();
-//        TextView textView = (TextView)findViewById(R.id.nav_family_name);
-//        textView.setText(familyName);
-        setTitle(getResources().getString(R.string.family_format, familyName));
-
+        String familyName = getResources().getString(R.string.family_format,  mFamily.getName());
+        setTitle(familyName);
+        nav_familyName.setText(familyName);
     }
 
     @Override
@@ -112,15 +117,13 @@ public class NavActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_child_list:
-                final ChildListFragment childListFragment = new ChildListFragment();
-                childListFragment.setNavActivityCallback(this);
-                switchTo = childListFragment;
+                switchTo = mChildListFragment;
                 setTitle(getResources().getString(R.string.family_format, mFamily.getName()));
                 mFab.show();
                 mFab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        childListFragment.showAddEditDialog(null);
+                        showAddEditDialog(null);
                     }
                 });
                 mFab.setImageResource(R.drawable.ic_child_add);
@@ -162,7 +165,11 @@ public class NavActivity extends AppCompatActivity
 
     @Override
     public void showEditRemovePopup(Child child, View v, int position) {
+        mChildListFragment.showEditRemovePopup(child, v, position);
+    }
 
+    private void showAddEditDialog(Child child) {
+        mChildListFragment.showAddEditDialog(child);
     }
 
     @Override
