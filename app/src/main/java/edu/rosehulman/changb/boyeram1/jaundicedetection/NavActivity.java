@@ -17,22 +17,30 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.ChildAdapter;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.TestResultAdapter;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.fragments.ChildListFragment;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.fragments.InfoFragment;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.fragments.NearbyFragment;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.fragments.TestResultListFragment;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Child;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Family;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResult;
 
 public class NavActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, TestResultAdapter.Callback, ChildAdapter.NavActivityCallback {
+        implements NavigationView.OnNavigationItemSelectedListener, TestResultAdapter.Callback, ChildAdapter.NavActivityCallback, OnMapReadyCallback {
 
     private String mKeyOfFamilyOfChild;
     private FloatingActionButton mFab;
     private Family mFamily;
     private ChildListFragment mChildListFragment;
+    private NearbyFragment mNearbyFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +69,9 @@ public class NavActivity extends AppCompatActivity
 
         mChildListFragment = new ChildListFragment();
         mChildListFragment.setNavActivityCallback(this);
+
+        mNearbyFragment = new NearbyFragment();
+        mNearbyFragment.setOnMapReadyCallback(this);
 
         if (savedInstanceState == null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -130,6 +141,7 @@ public class NavActivity extends AppCompatActivity
                 break;
             case R.id.nav_test_list:
                 switchTo = new TestResultListFragment();
+                setTitle(getResources().getString(R.string.test_format, mFamily.getName()));
                 mFab.show();
                 mFab.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -141,12 +153,15 @@ public class NavActivity extends AppCompatActivity
                 mFab.setImageResource(R.drawable.ic_library_add);
                 break;
             case R.id.nav_nearby:
+                switchTo = mNearbyFragment;
+                setTitle(getResources().getString(R.string.nearbyFragTitle));
                 mFab.hide();
                 break;
             case R.id.nav_settings:
                 startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
                 break;
             case R.id.nav_info:
+                setTitle(getResources().getString(R.string.infoFragTitle));
                 mFab.hide();
                 switchTo = new InfoFragment();
                 break;
@@ -184,5 +199,15 @@ public class NavActivity extends AppCompatActivity
     @Override
     public void onTestSelected(TestResult testResult) {
 
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        GoogleMap mMap = googleMap;
+
+        // Add a marker in Sydney and move the camera
+        LatLng sydney = new LatLng(-34, 151);
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 }

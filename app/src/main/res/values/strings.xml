@@ -6,7 +6,9 @@
     <string name="add_family_dialog_title">Enter family information</string>
     <string name="add_child_dialog_title">Enter child information</string>
     <string name="login_remove_title">Remove</string>
-    <string name="loginTitle">Tap family to login</string>
+    <string name="loginTitle">Tap a family to login</string>
+    <string name="infoFragTitle">Jaundice Information</string>
+    <string name="nearbyFragTitle">Nearby Doctors</string>
 
     <!-- Messages -->
     <string name="login_remove_message">Are you sure?</string>
@@ -37,9 +39,14 @@
     <string name="nav_child_list">Child List</string>
     <string name="nav_test_list">Test List</string>
     <string name="family_format">%s Family</string>
+    <string name="test_format">%s Family Tests</string>
     <string name="nav_nearby_doctors">Nearby Doctors</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="info_fragement_text">Blank Text</string>
+    <string name="title_activity_maps">Map</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
