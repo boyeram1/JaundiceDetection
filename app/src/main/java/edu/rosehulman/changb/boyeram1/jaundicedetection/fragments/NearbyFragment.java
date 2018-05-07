@@ -36,6 +36,7 @@ public class NearbyFragment extends Fragment {
         // Inflate the layout for this fragment
         SupportMapFragment mapFragment = (SupportMapFragment) fragmentActivity.getSupportFragmentManager()
                 .findFragmentById(R.id.map);
+        mOnMapReadyCallback.toString();
         mapFragment.getMapAsync(mOnMapReadyCallback);
         return inflater.inflate(R.layout.fragment_nearby, container, false);
     }
