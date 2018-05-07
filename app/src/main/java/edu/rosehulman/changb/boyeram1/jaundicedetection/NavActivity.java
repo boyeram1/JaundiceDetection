@@ -156,9 +156,6 @@ public class NavActivity extends AppCompatActivity
                 setTitle(getResources().getString(R.string.nearbyFragTitle));
                 mFab.hide();
                 break;
-            case R.id.nav_settings:
-                startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
-                break;
             case R.id.nav_info:
                 setTitle(getResources().getString(R.string.infoFragTitle));
                 mFab.hide();
