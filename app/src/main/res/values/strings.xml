@@ -14,7 +14,7 @@
     <string name="login_remove_message">Are you sure?</string>
 
     <!-- Menu Items -->
-    <string name="action_settings">Settings</string>
+    <string name="action_logout">Logout</string>
     <string name="edit">Edit</string>
     <string name="remove">Remove</string>
 

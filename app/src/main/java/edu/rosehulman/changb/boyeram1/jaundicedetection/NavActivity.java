@@ -71,7 +71,6 @@ public class NavActivity extends AppCompatActivity
         mChildListFragment.setNavActivityCallback(this);
 
         mNearbyFragment = new NearbyFragment();
-        mNearbyFragment.setOnMapReadyCallback(this);
 
         if (savedInstanceState == null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -113,8 +112,8 @@ public class NavActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+        if (id == R.id.action_logout) {
+            super.onBackPressed();
             return true;
         }
 
@@ -156,9 +155,7 @@ public class NavActivity extends AppCompatActivity
                 switchTo = mNearbyFragment;
                 setTitle(getResources().getString(R.string.nearbyFragTitle));
                 mFab.hide();
-                Intent intent = new Intent(this, MapsActivity.class);
-                startActivity(intent);
-                return true;
+                break;
             case R.id.nav_settings:
                 startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
                 break;
