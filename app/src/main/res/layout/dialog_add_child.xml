@@ -24,7 +24,7 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:hint="@string/hint_name"
-            android:inputType="textPersonName"
+            android:inputType="textCapSentences"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_toRightOf="@id/child_name_text_view"
