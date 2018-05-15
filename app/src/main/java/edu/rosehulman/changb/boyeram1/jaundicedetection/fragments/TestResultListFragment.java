@@ -2,14 +2,7 @@ package edu.rosehulman.changb.boyeram1.jaundicedetection.fragments;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.media.ExifInterface;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,19 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-
+import edu.rosehulman.changb.boyeram1.jaundicedetection.Constants;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.NavActivity;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.R;
-import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.ChildAdapter;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.TestResultAdapter;
-import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResult;
-
-import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,10 +36,10 @@ public class TestResultListFragment extends Fragment implements INavDrawerFragme
     private AlertDialog.Builder mSelectPhotoTypeBuilder;
     private AlertDialog mSelectPhotoTypeDialog;
 
-//    private boolean isUploading = false;
-//    private boolean isCapturing = false;
+    private boolean isUploading = false;
+    private boolean isCapturing = false;
 
-//    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
 
     public TestResultListFragment() {
         // Required empty public constructor
@@ -64,7 +49,7 @@ public class TestResultListFragment extends Fragment implements INavDrawerFragme
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        RecyclerView view = (RecyclerView)inflater.inflate(R.layout.fragment_recycler_list, container, false);
+        RecyclerView view = (RecyclerView) inflater.inflate(R.layout.fragment_recycler_list, container, false);
         view.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new TestResultAdapter(getContext(), mCallback);
         view.setAdapter(mAdapter);
@@ -101,7 +86,7 @@ public class TestResultListFragment extends Fragment implements INavDrawerFragme
     }
 
     private void showAddNewTestDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder((Context)mNavActivityCallback);
+        AlertDialog.Builder builder = new AlertDialog.Builder((Context) mNavActivityCallback);
         builder.setTitle(getString(R.string.new_test_dialog_title));
 
         mAddNewTestBuilderView = getLayoutInflater().inflate(R.layout.dialog_add_test, null, false);
@@ -125,8 +110,8 @@ public class TestResultListFragment extends Fragment implements INavDrawerFragme
     public void onClick(View view) {
         int buttonId = view.getId();
 
-        if(mSelectPhotoTypeBuilder == null) {
-            mSelectPhotoTypeBuilder = new AlertDialog.Builder((Context)mNavActivityCallback);
+        if (mSelectPhotoTypeBuilder == null) {
+            mSelectPhotoTypeBuilder = new AlertDialog.Builder((Context) mNavActivityCallback);
             mSelectPhotoTypeBuilderView = getLayoutInflater().inflate(R.layout.dialog_select_image_type, null, false);
             mSelectPhotoTypeBuilder.setView(mSelectPhotoTypeBuilderView);
 
@@ -147,62 +132,57 @@ public class TestResultListFragment extends Fragment implements INavDrawerFragme
 
         switch (buttonId) {
             case R.id.button_camera:
-                // boolean for 'isCapturing'?
-                // this.isCapturing = true;
-                // this.isUploading = false;
+                this.isCapturing = true;
+                this.isUploading = false;
                 mSelectPhotoTypeDialog.show();
                 break;
 
             case R.id.button_upload:
-                // boolean for 'isUploading'?
-                // this.isCapturing = false;
-                // this.isUploading = true;
+                this.isCapturing = false;
+                this.isUploading = true;
                 mSelectPhotoTypeDialog.show();
                 break;
 
             case R.id.button_cancel_add_test:
-                // set both bools to false
-                // this.isCapturing = false;
-                // this.isUploading = false;
+                this.isCapturing = false;
+                this.isUploading = false;
                 mAddNewTestDialog.dismiss();
                 break;
 
             case R.id.button_eye:
-                // call a function that takes picture type as parameter
-                // takePictureOfType(0);
+                pictureOfType(Constants.PIC_TYPE_EYE);
                 mSelectPhotoTypeDialog.dismiss();
                 mAddNewTestDialog.dismiss();
                 break;
 
             case R.id.button_palm:
-                // call a function that takes picture type as parameter
-                // takePictureOfType(1);
+                pictureOfType(Constants.PIC_TYPE_PALM);
                 mSelectPhotoTypeDialog.dismiss();
                 mAddNewTestDialog.dismiss();
                 break;
 
             case R.id.button_foot:
-                // call a function that takes picture type as parameter
-                // takePictureOfType(2);
+                pictureOfType(Constants.PIC_TYPE_FOOT);
                 mSelectPhotoTypeDialog.dismiss();
                 mAddNewTestDialog.dismiss();
                 break;
 
             case R.id.button_cancel_select_image:
-                // set both bools to false
-                // this.isCapturing = false;
-                // this.isUploading = false;
+                this.isCapturing = false;
+                this.isUploading = false;
                 mSelectPhotoTypeDialog.dismiss();
                 break;
         }
     }
 
-//    private void takePictureOfType(int pictureType) {
-//        if(isUploading) {
-//
-//        } else if(isCapturing) {
-//
-//        }
-//    }
+    private void pictureOfType(int pictureType) {
+        if (isUploading) {
+            Log.d("TestResultFrag", "User chose to upload a pic of type: " + pictureType);
+            // use gallery chooser
+        } else if (isCapturing) {
+            Log.d("TestResultFrag", "User chose to capture a pic of type: " + pictureType);
+            // capture new picture
+        }
+    }
 
 }
