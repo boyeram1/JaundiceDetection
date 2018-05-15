@@ -23,8 +23,6 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 
-import com.google.firebase.database.FirebaseDatabase;
-
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.FamilyAdapter;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Family;
 
@@ -40,8 +38,6 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Lo
         setContentView(R.layout.activity_login);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_login);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -160,7 +156,7 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Lo
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("default",
-                    "YOUR_CHANNEL_NAME",
+                    "Jaundice Channel",
                     NotificationManager.IMPORTANCE_DEFAULT);
             channel.setDescription("YOUR_NOTIFICATION_CHANNEL_DISCRIPTION");
             mNotificationManager.createNotificationChannel(channel);
