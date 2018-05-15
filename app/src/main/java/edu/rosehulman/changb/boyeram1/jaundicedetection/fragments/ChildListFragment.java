@@ -12,19 +12,19 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.PopupMenu;
 import android.widget.TimePicker;
 
-import edu.rosehulman.changb.boyeram1.jaundicedetection.FamilyActivity;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.R;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.ChildAdapter;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.BirthDateTime;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Child;
-import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResult;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -185,6 +185,36 @@ public class ChildListFragment extends Fragment {
         });
         builder.setNegativeButton(android.R.string.cancel, null);
         builder.create().show();
+    }
+
+    public void showEditRemovePopup(final Child child, View v, final int position) {
+        PopupMenu popupMenu = new PopupMenu((Context) mNavActivityCallback, v);
+        popupMenu.inflate(R.menu.popup_edit_remove);
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menu_popup_edit:
+                        showAddEditDialog(child);
+                        break;
+                    case R.id.menu_popup_remove:
+                        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder((Context) mNavActivityCallback);
+                        builder.setTitle(R.string.login_remove_title);
+                        builder.setMessage(R.string.login_remove_message);
+                        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mAdapter.removeChild(position);
+                            }
+                        });
+                        builder.setNegativeButton(android.R.string.cancel, null);
+                        builder.create().show();
+                        break;
+                }
+                return false;
+            }
+        });
+        popupMenu.show();
     }
 
     public void setNavActivityCallback (ChildAdapter.NavActivityCallback navActivityCallback) {

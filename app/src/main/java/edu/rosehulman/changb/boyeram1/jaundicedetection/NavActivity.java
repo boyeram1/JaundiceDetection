@@ -15,21 +15,32 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.ChildAdapter;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.TestResultAdapter;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.fragments.ChildListFragment;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.fragments.InfoFragment;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.fragments.NearbyFragment;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.fragments.TestResultListFragment;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Child;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Family;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResult;
 
 public class NavActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, TestResultAdapter.Callback, ChildAdapter.NavActivityCallback {
+        implements NavigationView.OnNavigationItemSelectedListener, TestResultAdapter.Callback, ChildAdapter.NavActivityCallback, OnMapReadyCallback {
 
     private String mKeyOfFamilyOfChild;
     private FloatingActionButton mFab;
     private Family mFamily;
+    private ChildListFragment mChildListFragment;
+    private NearbyFragment mNearbyFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,18 +63,30 @@ public class NavActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.getMenu().getItem(0).setChecked(true);
+        View hView = navigationView.getHeaderView(0);
+        TextView nav_familyName = (TextView) hView.findViewById(R.id.nav_family_name);
+
+        mChildListFragment = new ChildListFragment();
+        mChildListFragment.setNavActivityCallback(this);
+
+        mNearbyFragment = new NearbyFragment();
+
         if (savedInstanceState == null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ChildListFragment childListFragment = new ChildListFragment();
-            childListFragment.setNavActivityCallback(this);
-            ft.add(R.id.fragment_container, childListFragment);
+            mFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showAddEditDialog(null);
+                }
+            });
+            mFab.setImageResource(R.drawable.ic_child_add);
+            ft.add(R.id.fragment_container, mChildListFragment);
             ft.commit();
         }
-        String familyName = mFamily.getName();
-//        TextView textView = (TextView)findViewById(R.id.nav_family_name);
-//        textView.setText(familyName);
-        setTitle(getResources().getString(R.string.family_format, familyName));
-
+        String familyName = getResources().getString(R.string.family_format,  mFamily.getName());
+        setTitle(familyName);
+        nav_familyName.setText(familyName);
     }
 
     @Override
@@ -89,15 +112,14 @@ public class NavActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+        if (id == R.id.action_logout) {
+            super.onBackPressed();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -105,16 +127,13 @@ public class NavActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_child_list:
-                final ChildListFragment childListFragment = new ChildListFragment();
-                childListFragment.setNavActivityCallback(this);
-                switchTo = childListFragment;
-
+                switchTo = mChildListFragment;
                 setTitle(getResources().getString(R.string.family_format, mFamily.getName()));
                 mFab.show();
                 mFab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        childListFragment.onFABClicked();
+                        showAddEditDialog(null);
                     }
                 });
                 mFab.setImageResource(R.drawable.ic_child_add);
@@ -123,7 +142,7 @@ public class NavActivity extends AppCompatActivity
                 final TestResultListFragment testResultListFragment = new TestResultListFragment();
                 testResultListFragment.setNavActivityCallback(this);
                 switchTo = testResultListFragment;
-
+                setTitle(getResources().getString(R.string.test_format, mFamily.getName()));
                 mFab.show();
                 mFab.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -133,11 +152,15 @@ public class NavActivity extends AppCompatActivity
                 });
                 mFab.setImageResource(R.drawable.ic_library_add);
                 break;
-            case R.id.nav_settings:
-                startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+            case R.id.nav_nearby:
+                switchTo = mNearbyFragment;
+                setTitle(getResources().getString(R.string.nearbyFragTitle));
+                mFab.hide();
                 break;
             case R.id.nav_info:
+                setTitle(getResources().getString(R.string.infoFragTitle));
                 mFab.hide();
+                switchTo = new InfoFragment();
                 break;
             case R.id.nav_logout:
                 super.onBackPressed();
@@ -158,7 +181,11 @@ public class NavActivity extends AppCompatActivity
 
     @Override
     public void showEditRemovePopup(Child child, View v, int position) {
+        mChildListFragment.showEditRemovePopup(child, v, position);
+    }
 
+    private void showAddEditDialog(Child child) {
+        mChildListFragment.showAddEditDialog(child);
     }
 
     @Override
@@ -169,5 +196,15 @@ public class NavActivity extends AppCompatActivity
     @Override
     public void onTestSelected(TestResult testResult) {
 
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        GoogleMap mMap = googleMap;
+
+        // Add a marker in Sydney and move the camera
+        LatLng sydney = new LatLng(-34, 151);
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 }

@@ -6,13 +6,15 @@
     <string name="add_family_dialog_title">Enter family information</string>
     <string name="add_child_dialog_title">Enter child information</string>
     <string name="login_remove_title">Remove</string>
-    <string name="loginTitle">Tap family to login</string>
+    <string name="loginTitle">Tap a family to login</string>
+    <string name="infoFragTitle">Jaundice Information</string>
+    <string name="nearbyFragTitle">Nearby Doctors</string>
 
     <!-- Messages -->
     <string name="login_remove_message">Are you sure?</string>
 
     <!-- Menu Items -->
-    <string name="action_settings">Settings</string>
+    <string name="action_logout">Logout</string>
     <string name="edit">Edit</string>
     <string name="remove">Remove</string>
 
@@ -29,9 +31,10 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- Nav Drawer Titles -->
     <string name="nav_info">Jaundice Info</string>
     <string name="nav_logout">Logout</string>
-    <string name="nav_settings">App Settings</string>
     <string name="nav_child_list">Child List</string>
     <string name="nav_test_list">Test List</string>
     <string name="family_format">%s Family</string>
@@ -41,5 +44,17 @@
     <string name="eye">Eye</string>
     <string name="palm">Palm</string>
     <string name="foot">Foot</string>
+    <string name="test_format">%s Family Tests</string>
+    <string name="nav_nearby_doctors">Nearby Doctors</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="info_fragment_text">Blank Text</string>
+    <string name="title_activity_maps">Map</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nearby_hospital_text">hospital</string>
+    <string name="nearby_hospital_toast">Nearby Hospitals</string>
+>>>>>>> e6f7787fbe22c865e891d2f22db8cd32bb764d2d
 
 </resources>
