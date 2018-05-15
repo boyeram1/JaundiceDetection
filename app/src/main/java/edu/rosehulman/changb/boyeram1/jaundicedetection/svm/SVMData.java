@@ -5,7 +5,7 @@ public class SVMData {
 	public static final double[] sigmas = { 0, 0, 0.6400000000000002,
 			1.2800000000000005, 1.8101933598375624, 2.2627416997969525,
 			2.5600000000000009, 3.6203867196751247 };
-	public static final int[] nSupportVectors = {8 0, 0, 1349, 1335, 1393, 1577,
+	public static final int[] nSupportVectors = { 0, 0, 1349, 1335, 1393, 1577,
 			1710, 151 };
 	public static final int[] dimensions = { 0, 6, 24, 54, 96, 150, 216, 294 };
 	public static final double[] biases = { 0, 0, -0.3423244187247540,
