@@ -30,6 +30,8 @@ import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.ChildAdapter;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.TestResultAdapter;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResult;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -49,7 +51,10 @@ public class TestResultListFragment extends Fragment implements INavDrawerFragme
     private AlertDialog.Builder mSelectPhotoTypeBuilder;
     private AlertDialog mSelectPhotoTypeDialog;
 
-    private static final int CAMERA_PIC_REQUEST = 1337;
+//    private boolean isUploading = false;
+//    private boolean isCapturing = false;
+
+//    private static final int REQUEST_IMAGE_CAPTURE = 1;
 
     public TestResultListFragment() {
         // Required empty public constructor
@@ -142,35 +147,62 @@ public class TestResultListFragment extends Fragment implements INavDrawerFragme
 
         switch (buttonId) {
             case R.id.button_camera:
+                // boolean for 'isCapturing'?
+                // this.isCapturing = true;
+                // this.isUploading = false;
                 mSelectPhotoTypeDialog.show();
                 break;
 
             case R.id.button_upload:
+                // boolean for 'isUploading'?
+                // this.isCapturing = false;
+                // this.isUploading = true;
                 mSelectPhotoTypeDialog.show();
                 break;
 
             case R.id.button_cancel_add_test:
+                // set both bools to false
+                // this.isCapturing = false;
+                // this.isUploading = false;
                 mAddNewTestDialog.dismiss();
                 break;
 
             case R.id.button_eye:
+                // call a function that takes picture type as parameter
+                // takePictureOfType(0);
                 mSelectPhotoTypeDialog.dismiss();
                 mAddNewTestDialog.dismiss();
                 break;
 
             case R.id.button_palm:
+                // call a function that takes picture type as parameter
+                // takePictureOfType(1);
                 mSelectPhotoTypeDialog.dismiss();
                 mAddNewTestDialog.dismiss();
                 break;
 
             case R.id.button_foot:
+                // call a function that takes picture type as parameter
+                // takePictureOfType(2);
                 mSelectPhotoTypeDialog.dismiss();
                 mAddNewTestDialog.dismiss();
                 break;
 
             case R.id.button_cancel_select_image:
+                // set both bools to false
+                // this.isCapturing = false;
+                // this.isUploading = false;
                 mSelectPhotoTypeDialog.dismiss();
                 break;
         }
     }
+
+//    private void takePictureOfType(int pictureType) {
+//        if(isUploading) {
+//
+//        } else if(isCapturing) {
+//
+//        }
+//    }
+
 }
