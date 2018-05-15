@@ -18,10 +18,10 @@ import java.util.Scanner;
 public class SVM {
 
 	enum DataSource {
-		USE_MATLAB_BUILTIN_FOR_TOY_PROBLEM, USE_SCHWAIGHOFER_FOR_TOY_PROBLEM, USE_MATLAB_BUILTIN_FOR_SUNSET, USE_SCHWAIGHOFER_FOR_SUNSET
+		USE_MATLAB_BUILTIN_FOR_TOY_PROBLEM, USE_SCHWAIGHOFER_FOR_TOY_PROBLEM, USE_MATLAB_BUILTIN_FOR_JAUNDICE, USE_SCHWAIGHOFER_FOR_JAUNDICE
 	};
 
-	private static DataSource source = DataSource.USE_SCHWAIGHOFER_FOR_SUNSET;
+	private static DataSource source = DataSource.USE_MATLAB_BUILTIN_FOR_JAUNDICE;
 	private int mBlocksize;
 	private Context mContext;
 	private int nSupportVectors;
@@ -59,12 +59,12 @@ public class SVM {
 					mSupportVectors[svIdx]);
 			switch (source) {
 			case USE_MATLAB_BUILTIN_FOR_TOY_PROBLEM:
-			case USE_MATLAB_BUILTIN_FOR_SUNSET:
+			case USE_MATLAB_BUILTIN_FOR_JAUNDICE:
 				y1 += mAlphas[svIdx]
-						* Math.exp(-dist2 / (2 * this.sigma * this.sigma));
+						* Math.exp(-dist2 * 1/Math.sqrt (2));
 				break;
 			case USE_SCHWAIGHOFER_FOR_TOY_PROBLEM:
-			case USE_SCHWAIGHOFER_FOR_SUNSET:
+			case USE_SCHWAIGHOFER_FOR_JAUNDICE:
 				y1 += mAlphas[svIdx]
 						* Math.exp(-dist2 / (this.sigma * this.sigma));
 			}
@@ -105,7 +105,7 @@ public class SVM {
 
 	private void readParameters() {
 //		long start = System.currentTimeMillis();
-		String trainedSVMFile = String.format("trained_sunset_android_%d", mBlocksize);
+		String trainedSVMFile = "trained_jaundice_android";
 //		Log.d(MobileSunset.TAG, trainedSVMFile);
 		int trainedSVMFileID = mContext.getResources().getIdentifier(trainedSVMFile, "raw", mContext.getPackageName());
 //		Log.d(MobileSunset.TAG, trainedSVMFileID + "");
@@ -113,9 +113,11 @@ public class SVM {
 		Scanner fileScanner = new Scanner(inputStream);
 		this.sigma = SVMData.sigmas[mBlocksize];
 //		Log.d(MobileSunset.TAG, String.format("sigma : %.8f", this.sigma));
-		this.nSupportVectors = SVMData.nSupportVectors[mBlocksize];
-//		Log.d(MobileSunset.TAG,	String.format("nSupo : %d", this.nSupportVectors));
-		this.dimension = SVMData.dimensions[mBlocksize];
+//		this.nSupportVectors = SVMData.nSupportVectors[mBlocksize];
+		this.nSupportVectors = SVMData.nSupportVectors[0];
+		//		Log.d(MobileSunset.TAG,	String.format("nSupo : %d", this.nSupportVectors));
+//		this.dimension = SVMData.dimensions[mBlocksize];
+		this.dimension = SVMData.dimensions[0];
 //		Log.d(MobileSunset.TAG, String.format("dim : %d", this.dimension));
 		this.bias = SVMData.biases[mBlocksize];
 //		Log.d(MobileSunset.TAG, String.format("bias : %.8f", this.bias));
