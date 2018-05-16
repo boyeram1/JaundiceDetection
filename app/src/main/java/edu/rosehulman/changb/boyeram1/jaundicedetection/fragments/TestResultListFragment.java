@@ -2,20 +2,40 @@ package edu.rosehulman.changb.boyeram1.jaundicedetection.fragments;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 import edu.rosehulman.changb.boyeram1.jaundicedetection.Constants;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.NavActivity;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.R;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.ChildAdapter;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.TestResultAdapter;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Photo;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResult;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResultTime;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.utils.SharedPrefsUtils;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,21 +59,31 @@ public class TestResultListFragment extends Fragment implements INavDrawerFragme
     private boolean isUploading = false;
     private boolean isCapturing = false;
 
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int RC_TAKE_PICTURE = 1;
+    private static final int RC_CHOOSE_PICTURE = 2;
 
     public TestResultListFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.setHasOptionsMenu(true);
+
         // Inflate the layout for this fragment
         RecyclerView view = (RecyclerView) inflater.inflate(R.layout.fragment_recycler_list, container, false);
         view.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter = new TestResultAdapter(getContext(), mCallback);
+
+        mAdapter = new TestResultAdapter(mNavActivityCallback);
         view.setAdapter(mAdapter);
+
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_test_results, menu);
     }
 
     @Override
@@ -182,7 +212,31 @@ public class TestResultListFragment extends Fragment implements INavDrawerFragme
         } else if (isCapturing) {
             Log.d("TestResultFrag", "User chose to capture a pic of type: " + pictureType);
             // capture new picture
+            captureNewPicture(pictureType);
         }
     }
 
+    private void captureNewPicture(int pictureType) {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, RC_TAKE_PICTURE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == RC_TAKE_PICTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+
+            DateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+            DateFormat tf = new SimpleDateFormat("hh:mm", Locale.US);
+
+            Date now = Calendar.getInstance().getTime();
+            String date = df.format(now);
+            String time = tf.format(now);
+
+            TestResultTime testResultTime = new TestResultTime(date, time);
+            String childKey = SharedPrefsUtils.getCurrentChildKey();
+            mAdapter.addTestResult(new TestResult(childKey, testResultTime, new Photo("new", imageBitmap), 10));
+        }
+    }
 }

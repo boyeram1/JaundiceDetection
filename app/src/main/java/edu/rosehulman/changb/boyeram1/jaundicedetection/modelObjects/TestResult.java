@@ -1,8 +1,5 @@
 package edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.firebase.database.Exclude;
 
 /**
@@ -12,28 +9,35 @@ import com.google.firebase.database.Exclude;
 public class TestResult {
 
     private String key;
+    private String childKey;
     private TestResultTime testResultTime;
-    private Photo eyePhoto;
-    private Photo palmPhoto;
-    private Photo footPhoto;
+    private Photo photo;
     private int result;
 
+    public TestResult() {}
 
-    public TestResult(TestResultTime testResultTime, Photo eyePhoto, Photo palmPhoto, Photo footPhoto, int result) {
+    public TestResult(String childKey, TestResultTime testResultTime, Photo photo, int result) {
+        this.childKey = childKey;
         this.testResultTime = testResultTime;
-        this.eyePhoto = eyePhoto;
-        this.palmPhoto = palmPhoto;
-        this.footPhoto = footPhoto;
+        this.photo = photo;
         this.result = result;
     }
 
     @Exclude
     public String getKey() {
-        return key;
+        return this.key;
     }
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String getChildKey() {
+        return this.childKey;
+    }
+
+    public void setChildKey(String key) {
+        this.childKey = key;
     }
 
     public TestResultTime getTestResultTime() {
@@ -44,28 +48,8 @@ public class TestResult {
         this.testResultTime = testResultTime;
     }
 
-    public Photo getEyePhoto() {
-        return eyePhoto;
-    }
-
-    public void setEyePhoto(Photo eyePhoto) {
-        this.eyePhoto = eyePhoto;
-    }
-
-    public Photo getPalmPhoto() {
-        return palmPhoto;
-    }
-
-    public void setPalmPhoto(Photo palmPhoto) {
-        this.palmPhoto = palmPhoto;
-    }
-
-    public Photo getFootPhoto() {
-        return footPhoto;
-    }
-
-    public void setFootPhoto(Photo footPhoto) {
-        this.footPhoto = footPhoto;
+    public Photo getPhoto() {
+        return photo;
     }
 
     public int getResult() {
@@ -77,10 +61,9 @@ public class TestResult {
     }
 
     public void setValues(TestResult testResult) {
+        this.childKey = testResult.getChildKey();
         this.testResultTime = testResult.getTestResultTime();
-        this.eyePhoto = testResult.getEyePhoto();
-        this.palmPhoto = testResult.getPalmPhoto();
-        this.footPhoto = testResult.getFootPhoto();
+        this.photo = testResult.getPhoto();
         this.result = testResult.getResult();
     }
 }

@@ -55,6 +55,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="nearby_hospital_text">hospital</string>
     <string name="nearby_hospital_toast">Nearby Hospitals</string>
->>>>>>> e6f7787fbe22c865e891d2f22db8cd32bb764d2d
+    <string name="action_choose_child">Choose Child</string>
+    >>>>>>> e6f7787fbe22c865e891d2f22db8cd32bb764d2d
 
 </resources>

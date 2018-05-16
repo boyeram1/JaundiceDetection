@@ -1,10 +1,9 @@
 package edu.rosehulman.changb.boyeram1.jaundicedetection;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -32,15 +31,22 @@ import edu.rosehulman.changb.boyeram1.jaundicedetection.fragments.TestResultList
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Child;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Family;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResult;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.utils.SharedPrefsUtils;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.utils.Utils;
 
 public class NavActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, TestResultAdapter.Callback, ChildAdapter.NavActivityCallback, OnMapReadyCallback {
+        implements
+            NavigationView.OnNavigationItemSelectedListener,
+            TestResultAdapter.Callback,
+            ChildAdapter.NavActivityCallback,
+            OnMapReadyCallback,
+            Utils.ActivityWithToolbar {
 
-    private String mKeyOfFamilyOfChild;
     private FloatingActionButton mFab;
-    private Family mFamily;
     private ChildListFragment mChildListFragment;
     private NearbyFragment mNearbyFragment;
+    private TextView mNavFamilyNameTextView;
+    private String mFamilyName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +54,6 @@ public class NavActivity extends AppCompatActivity
         setContentView(R.layout.activity_nav);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        Intent intent = getIntent();
-        mFamily = intent.getParcelableExtra(LoginActivity.EXTRA_FAMILY);
-        mKeyOfFamilyOfChild = mFamily.getKey();
 
         mFab = (FloatingActionButton) findViewById(R.id.fab_nav);
 
@@ -65,12 +67,14 @@ public class NavActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.getMenu().getItem(0).setChecked(true);
         View hView = navigationView.getHeaderView(0);
-        TextView nav_familyName = (TextView) hView.findViewById(R.id.nav_family_name);
+        mNavFamilyNameTextView = (TextView) hView.findViewById(R.id.nav_family_name);
 
         mChildListFragment = new ChildListFragment();
         mChildListFragment.setNavActivityCallback(this);
 
         mNearbyFragment = new NearbyFragment();
+
+        Utils.getCurrentFamilyNameForToolbar(this);
 
         if (savedInstanceState == null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -84,9 +88,6 @@ public class NavActivity extends AppCompatActivity
             ft.add(R.id.fragment_container, mChildListFragment);
             ft.commit();
         }
-        String familyName = getResources().getString(R.string.family_format,  mFamily.getName());
-        setTitle(familyName);
-        nav_familyName.setText(familyName);
     }
 
     @Override
@@ -128,7 +129,7 @@ public class NavActivity extends AppCompatActivity
         switch (id) {
             case R.id.nav_child_list:
                 switchTo = mChildListFragment;
-                setTitle(getResources().getString(R.string.family_format, mFamily.getName()));
+                setTitle(getResources().getString(R.string.family_format, mFamilyName));
                 mFab.show();
                 mFab.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -142,7 +143,7 @@ public class NavActivity extends AppCompatActivity
                 final TestResultListFragment testResultListFragment = new TestResultListFragment();
                 testResultListFragment.setNavActivityCallback(this);
                 switchTo = testResultListFragment;
-                setTitle(getResources().getString(R.string.test_format, mFamily.getName()));
+                setTitle(getResources().getString(R.string.test_format, mFamilyName));
                 mFab.show();
                 mFab.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -184,18 +185,26 @@ public class NavActivity extends AppCompatActivity
         mChildListFragment.showEditRemovePopup(child, v, position);
     }
 
+    @Override
+    public Context getNavActivityContext() {
+        return getApplicationContext();
+    }
+
     private void showAddEditDialog(Child child) {
         mChildListFragment.showAddEditDialog(child);
     }
 
     @Override
-    public String getKeyOfFamilyOfChild() {
-        return mKeyOfFamilyOfChild;
+    public void onTestSelected(TestResult testResult) {
+
     }
 
     @Override
-    public void onTestSelected(TestResult testResult) {
-
+    public void setToolbarTitle(String familyName) {
+        mFamilyName = familyName;
+        String title = getResources().getString(R.string.family_format, familyName);
+        setTitle(title);
+        mNavFamilyNameTextView.setText(title);
     }
 
     @Override

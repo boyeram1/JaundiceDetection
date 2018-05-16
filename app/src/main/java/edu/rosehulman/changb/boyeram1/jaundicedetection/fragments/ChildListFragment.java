@@ -25,6 +25,8 @@ import edu.rosehulman.changb.boyeram1.jaundicedetection.R;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.ChildAdapter;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.BirthDateTime;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Child;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Family;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.utils.SharedPrefsUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,7 +59,7 @@ public class ChildListFragment extends Fragment {
     }
 
     public void showAddEditDialog(final Child child) {
-        AlertDialog.Builder builder = new AlertDialog.Builder((Context)mNavActivityCallback);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(R.string.add_child_dialog_title);
 
         final View view = getLayoutInflater().inflate(R.layout.dialog_add_child, null, false);
@@ -96,7 +98,9 @@ public class ChildListFragment extends Fragment {
                     String dayOfBirth = dayOfBirthEditText.getText().toString();
                     String timeOfBirth = timeOfBirthEditText.getText().toString();
                     BirthDateTime birthDateTime = new BirthDateTime(dayOfBirth, timeOfBirth);
-                    mAdapter.updateChild(child, name, birthDateTime);
+
+                    String familyKey = SharedPrefsUtils.getCurrentFamilyKey();
+                    mAdapter.updateChild(child, familyKey, name, birthDateTime);
                 }
             };
 
@@ -127,7 +131,8 @@ public class ChildListFragment extends Fragment {
                 String name = nameEditText.getText().toString();
 
                 if(child == null) {
-                    Child newChild = new Child(name, birthDateTime);
+                    String familyKey = SharedPrefsUtils.getCurrentFamilyKey();
+                    Child newChild = new Child(familyKey, name, birthDateTime);
                     mAdapter.addChild(newChild);
                 }
             }
@@ -138,7 +143,7 @@ public class ChildListFragment extends Fragment {
     }
 
     private void showDatePickerDialog(final BirthDateTime birthDateTime, final EditText dateEditText) {
-        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder((Context)mNavActivityCallback);
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getContext());
 
         View dialog_view = getLayoutInflater().inflate(R.layout.dialog_select_date, null, false);
         builder.setView(dialog_view);
@@ -164,7 +169,7 @@ public class ChildListFragment extends Fragment {
     }
 
     private void showTimePickerDialog(final BirthDateTime birthDateTime, final EditText timeEditText) {
-        AlertDialog.Builder builder = new AlertDialog.Builder((Context)mNavActivityCallback);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         View dialog_view = getLayoutInflater().inflate(R.layout.dialog_select_time, null, false);
         builder.setView(dialog_view);
@@ -188,7 +193,7 @@ public class ChildListFragment extends Fragment {
     }
 
     public void showEditRemovePopup(final Child child, View v, final int position) {
-        PopupMenu popupMenu = new PopupMenu((Context) mNavActivityCallback, v);
+        PopupMenu popupMenu = new PopupMenu(getContext(), v);
         popupMenu.inflate(R.menu.popup_edit_remove);
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -198,7 +203,7 @@ public class ChildListFragment extends Fragment {
                         showAddEditDialog(child);
                         break;
                     case R.id.menu_popup_remove:
-                        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder((Context) mNavActivityCallback);
+                        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getContext());
                         builder.setTitle(R.string.login_remove_title);
                         builder.setMessage(R.string.login_remove_message);
                         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {

@@ -1,5 +1,6 @@
 package edu.rosehulman.changb.boyeram1.jaundicedetection.adapters;
 
+import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,12 +13,17 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 
+import edu.rosehulman.changb.boyeram1.jaundicedetection.Constants;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.NavActivity;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.R;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.BirthDateTime;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Child;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Family;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.utils.SharedPrefsUtils;
 
 /**
  * Created by boyeram on 4/16/18.
@@ -34,9 +40,12 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
         mCallback = callback;
         mRecyclerView = recyclerView;
 
-        mChildrenRef = FirebaseDatabase.getInstance().getReference("children").child(mCallback.getKeyOfFamilyOfChild());
-        mChildrenRef.addChildEventListener(new ChildrenChildEventListener());
+        String familyKey = SharedPrefsUtils.getCurrentFamilyKey();
+
+        mChildrenRef = FirebaseDatabase.getInstance().getReference("children");
         mChildrenRef.keepSynced(true);
+        Query myChildrenRef = mChildrenRef.orderByChild("familyKey").equalTo(familyKey);
+        myChildrenRef.addChildEventListener(new ChildrenChildEventListener());
     }
 
     public void addChild(Child newChild) {
@@ -69,8 +78,8 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
         }).show();
     }
 
-    public void updateChild(Child child, String name, BirthDateTime birthDateTime) {
-        child.setValues(new Child(name, birthDateTime));
+    public void updateChild(Child child, String familyKey, String name, BirthDateTime birthDateTime) {
+        child.setValues(new Child(familyKey, name, birthDateTime));
         mChildrenRef.child(child.getKey()).setValue(child);
     }
 
@@ -96,6 +105,9 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
             child.setKey(dataSnapshot.getKey());
             mChildren.add(0, child);
             notifyDataSetChanged();
+
+            Log.d(Constants.TAG, "Setting the current child key to " + dataSnapshot.getKey());
+            SharedPrefsUtils.setCurrentChildKey(dataSnapshot.getKey());
         }
 
         @Override
@@ -136,7 +148,7 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
-            Log.d("JD", "Database error: " + databaseError);
+            Log.d(Constants.TAG, "Database error: " + databaseError);
         }
     }
 
@@ -147,7 +159,8 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
 
     public interface NavActivityCallback {
         void showEditRemovePopup(Child child, View v, int position);
-        String getKeyOfFamilyOfChild();
+        Context getNavActivityContext();
+//        String getKeyOfFamilyOfChild();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {

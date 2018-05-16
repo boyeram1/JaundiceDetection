@@ -1,6 +1,7 @@
 package edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects;
 
 import android.graphics.Bitmap;
+import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.google.firebase.database.Exclude;
 
@@ -36,6 +37,7 @@ public class Photo {
         this.fileName = fileName;
     }
 
+    @Exclude
     public Bitmap getImageBitmap() {
         return imageBitmap;
     }

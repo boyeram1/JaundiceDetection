@@ -27,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.FamilyAdapter;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Family;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.utils.SharedPrefsUtils;
 
 public class LoginActivity extends AppCompatActivity implements FamilyAdapter.LoginActivityCallback {
 
@@ -113,7 +114,8 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Lo
     public void onSelect(Family family) {
         Log.d("Family onSelect", family.getName() + " selected");
         Intent intent = new Intent(this, NavActivity.class);
-        intent.putExtra(EXTRA_FAMILY, family);
+        SharedPrefsUtils.setContext(this);
+        SharedPrefsUtils.setCurrentFamilyKey(family.getKey());
         startActivity(intent);
     }
 
