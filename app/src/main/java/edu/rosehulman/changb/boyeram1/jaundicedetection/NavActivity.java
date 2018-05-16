@@ -34,8 +34,7 @@ import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResult;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.utils.SharedPrefsUtils;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.utils.Utils;
 
-public class NavActivity extends AppCompatActivity
-        implements
+public class NavActivity extends AppCompatActivity implements
             NavigationView.OnNavigationItemSelectedListener,
             TestResultAdapter.Callback,
             ChildAdapter.NavActivityCallback,
@@ -209,11 +208,6 @@ public class NavActivity extends AppCompatActivity
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        GoogleMap mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        // empty
     }
 }

@@ -31,13 +31,17 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
     private LoginActivityCallback mFamilyAdapterCallback;
     private RecyclerView mRecyclerView;
     private DatabaseReference mFamiliesRef;
+    private static FirebaseDatabase mDatabase;
 
     public FamilyAdapter(LoginActivityCallback familyCallback, RecyclerView view) {
         this.mFamilyAdapterCallback = familyCallback;
         this.mFamilies = new ArrayList<>();
         this.mRecyclerView = view;
-
-        mFamiliesRef = FirebaseDatabase.getInstance().getReference().child("families");
+        if (mDatabase == null) {
+            mDatabase = FirebaseDatabase.getInstance();
+            mDatabase.setPersistenceEnabled(true);
+        }
+        mFamiliesRef = mDatabase.getReference().child("families");
         mFamiliesRef.addChildEventListener(new FamilyEventListener());
         mFamiliesRef.keepSynced(true);
     }
