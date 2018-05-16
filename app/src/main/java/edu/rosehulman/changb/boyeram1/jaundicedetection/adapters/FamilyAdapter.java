@@ -28,12 +28,12 @@ import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Family;
 public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder> {
 
     private List<Family> mFamilies;
-    private LoginActivityCallback mFamilyAdapterCallback;
+    private FamilyLoginActivityCallback mFamilyAdapterCallback;
     private RecyclerView mRecyclerView;
     private DatabaseReference mFamiliesRef;
     private static FirebaseDatabase mDatabase;
 
-    public FamilyAdapter(LoginActivityCallback familyCallback, RecyclerView view) {
+    public FamilyAdapter(FamilyLoginActivityCallback familyCallback, RecyclerView view) {
         this.mFamilyAdapterCallback = familyCallback;
         this.mFamilies = new ArrayList<>();
         this.mRecyclerView = view;
@@ -154,7 +154,7 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.ViewHolder
         }
     }
 
-    public interface LoginActivityCallback {
+    public interface FamilyLoginActivityCallback {
         public void onSelect(Family family);
         public void onEdit(Family family);
         void showEditRemovePopup(Family family, View v, int position);

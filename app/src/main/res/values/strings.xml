@@ -10,6 +10,18 @@
     <string name="infoFragTitle">Jaundice Information</string>
     <string name="nearbyFragTitle">Nearby Doctors</string>
 
+    <!-- Login Elements -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Login</string>
+    <string name="action_sign_in_with_google">Sign in with Google</string>
+    <string name="invalid_email">This email address is invalid</string>
+    <string name="invalid_password">Password is too short</string>
+    <string name="incorrect_password">Password is incorrect</string>
+    <string name="field_required">This field is required</string>
+    <string name="login_error">Login Error!</string>
+
+
     <!-- Messages -->
     <string name="login_remove_message">Are you sure?</string>
 
