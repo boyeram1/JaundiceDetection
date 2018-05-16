@@ -6,8 +6,8 @@ public class SVMData {
 	public static final int[] nSupportVectors = { 84 };
 	public static final int[] dimensions = { 294 };
         public static final double[] biases = { -0.1452 };
-	public static final double[] NORMALIZATION_MINS = { 0, 0, 0, 0, 0, 0 };
-    public static final double[] NORMALIZATION_MAXES = { 0, 0, 0, 0, 0, 0 };
+	public static final double[] NORMALIZATION_MINS = { 0, 0, -144.4875, 0, -85.5067, 0 };
+    public static final double[] NORMALIZATION_MAXES = { 783.9325, 328.4326, 322.1157, 70.9895, 235.5792, 60.0199 };
 ;
 
 	// normalize range 0 to Lmean 783.9325

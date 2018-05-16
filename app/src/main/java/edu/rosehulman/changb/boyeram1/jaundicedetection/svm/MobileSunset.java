@@ -1,16 +1,5 @@
 package edu.rosehulman.changb.boyeram1.jaundicedetection.svm;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -39,12 +28,23 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
-import edu.rosehulman.mobilesunset.svm.SVM;
-import edu.rosehulman.mobilesunset.svm.SVMData;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import edu.rosehulman.changb.boyeram1.jaundicedetection.R;
 import edu.rosehulman.sunrisesunset.SunriseSunsetCalculator;
 
 public class MobileSunset extends Activity implements LocationListener {
-	public static final String TAG = "MobileSunset";
+	public static final String TAG = "JaundiceDetection";
 	public static final String P = "Performance";
 	public static long mPStart = 0, mPCur = 0, mPEnd = 0;
 	public static final int MEDIA_TYPE_IMAGE = 1;
@@ -55,13 +55,13 @@ public class MobileSunset extends Activity implements LocationListener {
 	private static final int G_STANDARD_DEVIATION = 3;
 	private static final int B_MEAN = 4;
 	private static final int B_STANDARD_DEVIATION = 5;
-	private static final int BLOCK_SIZE = 7;
+	public static final int BLOCK_SIZE = 7;
 	private static final int NUMBER_OF_FEATURES = 6;
 
 	private Context mContext;
 	// Camera
 	private Camera mCamera;
-	private CameraPreview mCameraPreview;
+//	private CameraPreview mCameraPreview;
 	private boolean mCaptureFlag = false;
 	// Views
 	FrameLayout mCameraViewFrameLayout;
@@ -83,7 +83,7 @@ public class MobileSunset extends Activity implements LocationListener {
 	// SVM
 	private SVM mSVM;
 	private GetSVMAsyncTask mGetSVMAsyncTask;
-	private int mSelectedNumBlocks = DEFAULT_BLOCK_SIZE;
+	private int mSelectedNumBlocks = BLOCK_SIZE;
 	private boolean mIsSVMReady = false;
 	private long start = 0, end = 0;
 	// Time until sunset handler
