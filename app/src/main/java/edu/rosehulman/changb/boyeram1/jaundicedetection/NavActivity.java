@@ -101,16 +101,12 @@ public class NavActivity extends AppCompatActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.nav, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_logout) {
             super.onBackPressed();
@@ -128,7 +124,6 @@ public class NavActivity extends AppCompatActivity implements
         switch (id) {
             case R.id.nav_child_list:
                 switchTo = mChildListFragment;
-//                setTitle(getResources().getString(R.string.family_format, mFamilyName));
                 mFab.show();
                 mFab.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -142,7 +137,6 @@ public class NavActivity extends AppCompatActivity implements
                 final TestResultListFragment testResultListFragment = new TestResultListFragment();
                 testResultListFragment.setNavActivityCallback(this);
                 switchTo = testResultListFragment;
-                setTitle(getResources().getString(R.string.test_format, mFamilyName));
                 mFab.show();
                 mFab.setOnClickListener(new View.OnClickListener() {
                     @Override

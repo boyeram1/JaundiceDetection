@@ -86,6 +86,8 @@ public class TestResultListFragment extends Fragment implements INavDrawerFragme
         mAdapter = new TestResultAdapter(mNavActivityCallback);
         mRecyclerView.setAdapter(mAdapter);
 
+        Utils.getChildNameByKey(this);
+
         return mRecyclerView;
     }
 
@@ -119,6 +121,7 @@ public class TestResultListFragment extends Fragment implements INavDrawerFragme
 
         if(!mCurrentChildList.isEmpty()) {
             SharedPrefsUtils.setCurrentChildKey(mCurrentChildList.get(0).getKey());
+            setToolbarTitle(mCurrentChildList.get(0).getName());
         }
 
         builder.setSingleChoiceItems(childNames, 0, new DialogInterface.OnClickListener() {
@@ -126,6 +129,7 @@ public class TestResultListFragment extends Fragment implements INavDrawerFragme
             public void onClick(DialogInterface dialog, int which) {
                 Child currentChild = mCurrentChildList.get(which);
                 SharedPrefsUtils.setCurrentChildKey(currentChild.getKey());
+                setToolbarTitle(currentChild.getName());
             }
         });
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -296,5 +300,11 @@ public class TestResultListFragment extends Fragment implements INavDrawerFragme
     public void setCurrentChildList(List<Child> currentChildList) {
         mCurrentChildList = currentChildList;
         showSelectChildDialog();
+    }
+
+    @Override
+    public void setToolbarTitle(String childName) {
+        String title = getResources().getString(R.string.child_format, childName);
+        mNavActivityCallback.setTitle(title);
     }
 }

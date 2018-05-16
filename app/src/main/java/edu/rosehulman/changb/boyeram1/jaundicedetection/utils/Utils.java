@@ -2,6 +2,7 @@ package edu.rosehulman.changb.boyeram1.jaundicedetection.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
@@ -21,6 +22,25 @@ import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Child;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Family;
 
 public class Utils {
+
+    public static void getChildNameByKey(final FragmentNeedingChildList fragment) {
+        String childKey = SharedPrefsUtils.getCurrentChildKey();
+        DatabaseReference childRef = FirebaseDatabase.getInstance().getReference("children")
+                .child(childKey)
+                .child("name");
+        childRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String childName = (String)dataSnapshot.getValue();
+                fragment.setToolbarTitle(childName);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     public static void getCurrentChildren(final FragmentNeedingChildList fragment) {
         String familyKey = SharedPrefsUtils.getCurrentFamilyKey();
@@ -69,6 +89,7 @@ public class Utils {
 
     public interface FragmentNeedingChildList {
         void setCurrentChildList(List<Child> currentChildList);
+        void setToolbarTitle(String childName);
     }
 
     public interface ActivityWithToolbar {

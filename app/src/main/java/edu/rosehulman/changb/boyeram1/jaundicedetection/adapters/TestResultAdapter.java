@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -66,7 +67,13 @@ public class TestResultAdapter extends RecyclerView.Adapter<TestResultAdapter.Vi
     @Override
     public void onBindViewHolder(TestResultAdapter.ViewHolder holder, int position) {
         final TestResult testResult = mTestResults.get(position);
-        holder.mImageView.setImageBitmap(testResult.getPhoto().getImageBitmap());
+
+        if(testResult.getResult() >= 50) {
+            holder.mImageView.setImageResource(R.drawable.ic_bad);
+        } else {
+            holder.mImageView.setImageResource(R.drawable.ic_good);
+        }
+
         TestResultTime testResultTime = testResult.getTestResultTime();
         holder.mTestResultDateTextView.setText(testResultTime.dateToString() + " " + testResultTime.timeToString());
         holder.mTestResultPercentageTextView.setText(testResult.getResult() + "% chance of jaundice");
@@ -119,7 +126,7 @@ public class TestResultAdapter extends RecyclerView.Adapter<TestResultAdapter.Vi
 
         public ViewHolder(View itemView) {
             super(itemView);
-            mImageView = (ImageView) itemView.findViewById(R.id.image_view);
+            mImageView = (ImageView) itemView.findViewById(R.id.image_button);
             mTestResultDateTextView = (TextView) itemView.findViewById(R.id.test_date_text_view);
             mTestResultPercentageTextView = (TextView) itemView.findViewById(R.id.test_percentage_text_view);
         }
