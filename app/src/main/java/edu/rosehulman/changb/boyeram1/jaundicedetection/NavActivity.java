@@ -128,7 +128,7 @@ public class NavActivity extends AppCompatActivity implements
         switch (id) {
             case R.id.nav_child_list:
                 switchTo = mChildListFragment;
-                setTitle(getResources().getString(R.string.family_format, mFamilyName));
+//                setTitle(getResources().getString(R.string.family_format, mFamilyName));
                 mFab.show();
                 mFab.setOnClickListener(new View.OnClickListener() {
                     @Override

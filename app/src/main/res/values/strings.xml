@@ -56,6 +56,7 @@
     <string name="nearby_hospital_text">hospital</string>
     <string name="nearby_hospital_toast">Nearby Hospitals</string>
     <string name="action_choose_child">Choose Child</string>
+    <string name="dialog_choose_child_title">Choose child</string>
     >>>>>>> e6f7787fbe22c865e891d2f22db8cd32bb764d2d
 
 </resources>

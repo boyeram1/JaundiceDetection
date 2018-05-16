@@ -23,6 +23,7 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.rosehulman.changb.boyeram1.jaundicedetection.Constants;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.NavActivity;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.R;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.fragments.TestResultListFragment;
@@ -38,9 +39,7 @@ public class TestResultAdapter extends RecyclerView.Adapter<TestResultAdapter.Vi
 
     private ChildAdapter.NavActivityCallback mCallback;
     private List<TestResult> mTestResults;
-
     private DatabaseReference mTestResultsRef;
-    private DatabaseReference mChildrenRef;
 
     public TestResultAdapter(ChildAdapter.NavActivityCallback callback) {
         mTestResults = new ArrayList<>();
@@ -68,7 +67,8 @@ public class TestResultAdapter extends RecyclerView.Adapter<TestResultAdapter.Vi
     public void onBindViewHolder(TestResultAdapter.ViewHolder holder, int position) {
         final TestResult testResult = mTestResults.get(position);
         holder.mImageView.setImageBitmap(testResult.getPhoto().getImageBitmap());
-        holder.mTestResultDateTextView.setText(testResult.getTestResultTime().dateToString());
+        TestResultTime testResultTime = testResult.getTestResultTime();
+        holder.mTestResultDateTextView.setText(testResultTime.dateToString() + " " + testResultTime.timeToString());
         holder.mTestResultPercentageTextView.setText(testResult.getResult() + "% chance of jaundice");
     }
 
@@ -87,7 +87,6 @@ public class TestResultAdapter extends RecyclerView.Adapter<TestResultAdapter.Vi
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
             TestResult testResult = dataSnapshot.getValue(TestResult.class);
-            testResult.setKey(dataSnapshot.getKey());
             mTestResults.add(0, testResult);
             notifyDataSetChanged();
         }

@@ -2,6 +2,7 @@ package edu.rosehulman.changb.boyeram1.jaundicedetection.fragments;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -21,8 +23,10 @@ import android.widget.Button;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import edu.rosehulman.changb.boyeram1.jaundicedetection.Constants;
@@ -30,10 +34,12 @@ import edu.rosehulman.changb.boyeram1.jaundicedetection.NavActivity;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.R;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.ChildAdapter;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.TestResultAdapter;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Child;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Photo;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResult;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResultTime;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.utils.SharedPrefsUtils;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.utils.Utils;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -43,10 +49,11 @@ import static android.app.Activity.RESULT_OK;
  * {@link TestResultAdapter.Callback} interface
  * to handle interaction events.
  */
-public class TestResultListFragment extends Fragment implements INavDrawerFragment, View.OnClickListener {
+public class TestResultListFragment extends Fragment implements INavDrawerFragment, View.OnClickListener, Utils.FragmentNeedingChildList {
 
     private TestResultAdapter.Callback mCallback;
     private NavActivity mNavActivityCallback;
+    private RecyclerView mRecyclerView;
     private TestResultAdapter mAdapter;
 
     private View mAddNewTestBuilderView;
@@ -55,6 +62,8 @@ public class TestResultListFragment extends Fragment implements INavDrawerFragme
     private View mSelectPhotoTypeBuilderView;
     private AlertDialog.Builder mSelectPhotoTypeBuilder;
     private AlertDialog mSelectPhotoTypeDialog;
+
+    private List<Child> mCurrentChildList;
 
     private boolean isUploading = false;
     private boolean isCapturing = false;
@@ -71,19 +80,62 @@ public class TestResultListFragment extends Fragment implements INavDrawerFragme
         super.setHasOptionsMenu(true);
 
         // Inflate the layout for this fragment
-        RecyclerView view = (RecyclerView) inflater.inflate(R.layout.fragment_recycler_list, container, false);
-        view.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView = (RecyclerView) inflater.inflate(R.layout.fragment_recycler_list, container, false);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mAdapter = new TestResultAdapter(mNavActivityCallback);
-        view.setAdapter(mAdapter);
+        mRecyclerView.setAdapter(mAdapter);
 
-        return view;
+        return mRecyclerView;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_test_results, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_choose_child:
+                Utils.getCurrentChildren(this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void showSelectChildDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(R.string.dialog_choose_child_title);
+
+        String[] childNames = new String[mCurrentChildList.size()];
+        for(int i = 0; i < mCurrentChildList.size(); i++) {
+            Log.d(Constants.TAG, mCurrentChildList.get(i).getName());
+            childNames[i] = mCurrentChildList.get(i).getName();
+        }
+
+        if(!mCurrentChildList.isEmpty()) {
+            SharedPrefsUtils.setCurrentChildKey(mCurrentChildList.get(0).getKey());
+        }
+
+        builder.setSingleChoiceItems(childNames, 0, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Child currentChild = mCurrentChildList.get(which);
+                SharedPrefsUtils.setCurrentChildKey(currentChild.getKey());
+            }
+        });
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mAdapter = new TestResultAdapter(mNavActivityCallback);
+                mRecyclerView.setAdapter(mAdapter);
+            }
+        });
+        builder.create().show();
     }
 
     @Override
@@ -238,5 +290,11 @@ public class TestResultListFragment extends Fragment implements INavDrawerFragme
             String childKey = SharedPrefsUtils.getCurrentChildKey();
             mAdapter.addTestResult(new TestResult(childKey, testResultTime, new Photo("new", imageBitmap), 10));
         }
+    }
+
+    @Override
+    public void setCurrentChildList(List<Child> currentChildList) {
+        mCurrentChildList = currentChildList;
+        showSelectChildDialog();
     }
 }
