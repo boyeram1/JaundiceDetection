@@ -39,6 +39,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
         setContentView(R.layout.activity_login);
         mAuth = FirebaseAuth.getInstance();
         initializeListeners();
+        scheduleNotification(getNotification("5 sec delay"), 5000);
     }
 
     private void initializeListeners() {
@@ -108,4 +109,27 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
         loginFragment.onLoginError(message);
     }
 
+    private void scheduleNotification(Notification notification, int delay) {
+        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+    }
+
+    private Notification getNotification(String content) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "default");
+        builder.setContentTitle("Scheduled Jaundice Retest");
+        builder.setContentText(content);
+        builder.setSmallIcon(android.R.mipmap.sym_def_app_icon);
+        Intent intent = new Intent(getApplicationContext(), edu.rosehulman.changb.boyeram1.jaundicedetection.LoginActivity.class);
+        PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(pi);
+        Log.d("Notifications", "notification gotten");
+        return builder.build();
+    }
 }

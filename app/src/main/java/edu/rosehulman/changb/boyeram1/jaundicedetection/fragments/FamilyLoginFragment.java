@@ -121,7 +121,6 @@ public class FamilyLoginFragment extends Fragment implements Toolbar.OnMenuItemC
     @Override
     public void onSelect(Family family) {
         Log.d("Family onSelect", family.getName() + " selected");
-        scheduleNotification(getNotification("5 sec delay"), 5000);
         Intent intent = new Intent(mContext, NavActivity.class);
         SharedPrefsUtils.setContext(mContext);
         SharedPrefsUtils.setCurrentFamilyKey(family.getKey());
