@@ -70,10 +70,11 @@ public class NearbyFragment extends Fragment implements GoogleApiClient.Connecti
             @Override
             public void onMapReady(GoogleMap mMap) {
                 NearbyFragment.this.mMap = mMap;
-
+                checkLocationPermission();
                 // For showing a move to my location button
                 if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
                         ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    Log.d("NearbyFrag", "on create view location enabled");
                     NearbyFragment.this.mMap.setMyLocationEnabled(true);
                 }
                 buildGoogleApiClient();
@@ -84,6 +85,7 @@ public class NearbyFragment extends Fragment implements GoogleApiClient.Connecti
     }
 
     protected synchronized void buildGoogleApiClient() {
+        Log.d("NearbyFrag", "building google Api client");
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
