@@ -1,15 +1,20 @@
 package edu.rosehulman.changb.boyeram1.jaundicedetection.fragments;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.PopupMenu;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -31,9 +37,11 @@ import java.util.Locale;
 
 import edu.rosehulman.changb.boyeram1.jaundicedetection.Constants;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.NavActivity;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.NotificationUtils.NotificationPublisher;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.R;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.TestResultAdapter;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Child;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Family;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Photo;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResult;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResultTime;
@@ -44,19 +52,21 @@ import edu.rosehulman.changb.boyeram1.jaundicedetection.utils.Utils;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link TestResultAdapter.Callback} interface
+ * {@link TestResultAdapter.NavActivityCallback} interface
  * to handle interaction events.
  */
 public class TestResultListFragment extends Fragment
         implements INavDrawerFragment, View.OnClickListener,
-        Utils.FragmentNeedingChildList, SVMTasks.SVMConsumer {
+        Utils.FragmentNeedingChildList, SVMTasks.SVMConsumer, TestResultAdapter.NavActivityCallback {
 
-    public static final String TAG = "JaundiceDetection";
+    public static final String TAG = "JD-TestResultListFrag";
+    protected static final String EXTRA_FAMILY = "FAMILY_NAME";
 
-    private TestResultAdapter.Callback mCallback;
+    private TestResultAdapter.NavActivityCallback mCallback;
     private NavActivity mNavActivityCallback;
     private RecyclerView mRecyclerView;
     private TestResultAdapter mAdapter;
+    private Family mFamily;
 
     private View mAddNewTestBuilderView;
     private AlertDialog mAddNewTestDialog;
@@ -89,32 +99,14 @@ public class TestResultListFragment extends Fragment
         mRecyclerView = (RecyclerView) inflater.inflate(R.layout.fragment_recycler_list, container, false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        mAdapter = new TestResultAdapter(mNavActivityCallback);
+        mAdapter = new TestResultAdapter(mNavActivityCallback, mRecyclerView);
         mRecyclerView.setAdapter(mAdapter);
 
-        Utils.getChildNameByKey(this);
-
         svmTasks = new SVMTasks(getContext(), this);
+        Utils.getChildNameByKey(this);
+        Utils.getCurrentChildren(this);
 
         return mRecyclerView;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_test_results, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.action_choose_child:
-                Utils.getCurrentChildren(this);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     private void showSelectChildDialog() {
@@ -123,7 +115,6 @@ public class TestResultListFragment extends Fragment
 
         String[] childNames = new String[mCurrentChildList.size()];
         for(int i = 0; i < mCurrentChildList.size(); i++) {
-            Log.d(Constants.TAG, mCurrentChildList.get(i).getName());
             childNames[i] = mCurrentChildList.get(i).getName();
         }
 
@@ -143,7 +134,7 @@ public class TestResultListFragment extends Fragment
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mAdapter = new TestResultAdapter(mNavActivityCallback);
+                mAdapter = new TestResultAdapter(mNavActivityCallback, mRecyclerView);
                 mRecyclerView.setAdapter(mAdapter);
             }
         });
@@ -153,8 +144,9 @@ public class TestResultListFragment extends Fragment
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof TestResultAdapter.Callback) {
-            mCallback = (TestResultAdapter.Callback) context;
+        if (context instanceof TestResultAdapter.NavActivityCallback) {
+            mCallback = (TestResultAdapter.NavActivityCallback) context;
+
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement TestResultListFragment.NavActivityCallback");
@@ -169,13 +161,13 @@ public class TestResultListFragment extends Fragment
 
     @Override
     public void setNavActivityCallback(NavActivity navActivityCallback) {
-        Log.d("TestResultListFrag", "NavActivityCallback Set");
+        Log.d(TAG, "NavActivityCallback Set");
         mNavActivityCallback = navActivityCallback;
     }
 
     @Override
     public void onFABClicked() {
-        Log.d("FAB CLICK", "TestResultListFragment FAB clicked.");
+        Log.d(TAG, "TestResultListFragment FAB clicked.");
         showAddNewTestDialog();
     }
 
@@ -254,10 +246,10 @@ public class TestResultListFragment extends Fragment
     private void pictureOfType(int pictureType) {
         if (isUploading) {
             chooseNewPicture(pictureType);
-            Log.d("TestResultFrag", "User chose to upload a pic of type: " + pictureType);
+            Log.d(TAG, "User chose to upload a pic of type: " + pictureType);
             // use gallery chooser
         } else if (isCapturing) {
-            Log.d("TestResultFrag", "User chose to capture a pic of type: " + pictureType);
+            Log.d(TAG, "User chose to capture a pic of type: " + pictureType);
             // capture new picture
             captureNewPicture(pictureType);
         }
@@ -308,8 +300,8 @@ public class TestResultListFragment extends Fragment
 
         TestResultTime testResultTime = new TestResultTime(date, time);
         String childKey = SharedPrefsUtils.getCurrentChildKey();
-        mAdapter.addTestResult(new TestResult(childKey, testResultTime, new Photo("new", imageBitmap), 10));
-        svmTasks.sendBitmapToSVM(imageBitmap);
+        TestResult testResult = new TestResult(childKey, testResultTime, new Photo("new", imageBitmap), 10);
+        svmTasks.sendBitmapToSVM(imageBitmap, testResult);
     }
 
     private void sendGalleryPhotoToAdapter(Intent data) {
@@ -327,8 +319,8 @@ public class TestResultListFragment extends Fragment
 
                 TestResultTime testResultTime = new TestResultTime(date, time);
                 String childKey = SharedPrefsUtils.getCurrentChildKey();
-                mAdapter.addTestResult(new TestResult(childKey, testResultTime, new Photo("new", imageBitmap), 10));
-                svmTasks.sendBitmapToSVM(imageBitmap);
+                TestResult testResult = new TestResult(childKey, testResultTime, new Photo("new", imageBitmap), 10);
+                svmTasks.sendBitmapToSVM(imageBitmap, testResult);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -348,7 +340,90 @@ public class TestResultListFragment extends Fragment
     }
 
     @Override
-    public void onImageProcessed(Double result) {
+    public void onImageProcessed(TestResult testResult, Double result) {
         Log.d(TAG, String.format("Result: %s", Double.toString(result)));
+        testResult.setResult(result.intValue());
+        if (result.intValue() > 50) {
+            setNotification();
+        }
+        mAdapter.addTestResult(testResult);
+    }
+
+    public void setNotification() {
+        scheduleNotification(getNotification(getString(R.string.notification_content)), 3600000);
+    }
+
+    private void scheduleNotification(Notification notification, int delay) {
+        Intent notificationIntent = new Intent(getContext(), NotificationPublisher.class);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager alarmManager = (AlarmManager)getContext().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+    }
+
+    private Notification getNotification(String content) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), "default");
+        builder.setContentTitle(getString(R.string.app_name));
+        builder.setContentText(content);
+        builder.setSmallIcon(R.drawable.test_tube);
+        Intent intent = new Intent(getContext(), NavActivity.class);
+        intent.putExtra(EXTRA_FAMILY, mFamily);
+        PendingIntent pi = PendingIntent.getActivity(getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(pi);
+        Log.d("Notifications", "notification gotten");
+        return builder.build();
+    }
+
+    public void setFamily(Family family) {
+        mFamily = family;
+    }
+
+    @Override
+    public void onTestLongPressed(final TestResult testResult, View v, final int position) {
+        PopupMenu popupMenu = new PopupMenu((Context) mNavActivityCallback, v);
+        popupMenu.inflate(R.menu.popup_remove);
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menu_popup_remove:
+                        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder((Context) mNavActivityCallback);
+                        builder.setTitle(R.string.popup_remove_title);
+                        builder.setMessage(R.string.popup_remove_message);
+                        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mAdapter.removeTestResult(position);
+                            }
+                        });
+                        builder.setNegativeButton(android.R.string.cancel, null);
+                        builder.create().show();
+                        break;
+                }
+                return false;
+            }
+        });
+        popupMenu.show();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_test_results, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_choose_child:
+                Utils.getCurrentChildren(this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

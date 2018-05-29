@@ -5,13 +5,13 @@
     <!-- Titles -->
     <string name="add_family_dialog_title">Enter family information</string>
     <string name="add_child_dialog_title">Enter child information</string>
-    <string name="login_remove_title">Remove</string>
+    <string name="popup_remove_title">Remove</string>
     <string name="loginTitle">Tap a family to login</string>
     <string name="infoFragTitle">Jaundice Information</string>
     <string name="nearbyFragTitle">Nearby Doctors</string>
 
     <!-- Messages -->
-    <string name="login_remove_message">Are you sure?</string>
+    <string name="popup_remove_message">Are you sure?</string>
 
     <!-- Menu Items -->
     <string name="action_logout">Logout</string>

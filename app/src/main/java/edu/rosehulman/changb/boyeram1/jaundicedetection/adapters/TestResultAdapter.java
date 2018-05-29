@@ -1,5 +1,6 @@
 package edu.rosehulman.changb.boyeram1.jaundicedetection.adapters;
 
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,12 +29,17 @@ import edu.rosehulman.changb.boyeram1.jaundicedetection.utils.SharedPrefsUtils;
  */
 public class TestResultAdapter extends RecyclerView.Adapter<TestResultAdapter.ViewHolder> {
 
-    private ChildAdapter.NavActivityCallback mCallback;
+    private TestResultAdapter.NavActivityCallback mCallback;
     private List<TestResult> mTestResults;
     private DatabaseReference mTestResultsRef;
+    private RecyclerView mRecyclerView;
 
-    public TestResultAdapter(ChildAdapter.NavActivityCallback callback) {
+    private static String TAG = "JD-TestResAdapt";
+
+    public TestResultAdapter(TestResultAdapter.NavActivityCallback callback, RecyclerView recyclerView) {
         mTestResults = new ArrayList<>();
+        mRecyclerView = recyclerView;
+
         mCallback = callback;
 
         mTestResultsRef = FirebaseDatabase.getInstance().getReference("test-results");
@@ -47,9 +53,36 @@ public class TestResultAdapter extends RecyclerView.Adapter<TestResultAdapter.Vi
         mTestResultsRef.push().setValue(testResult);
     }
 
+    public void removeTestResult(final int position) {
+        final TestResult testResult = this.mTestResults.get(position);
+        Log.d(TAG, "Removing: " + testResult.getKey());
+        mTestResults.remove(position);
+        notifyItemRemoved(position);
+
+        Snackbar.make(this.mRecyclerView, "Test removed", Snackbar.LENGTH_LONG)
+                .setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (testResult != null) {
+                            mTestResults.add(position, testResult);
+                            notifyItemInserted(position);
+                            Snackbar.make(mRecyclerView, "Test restored", Snackbar.LENGTH_SHORT).show();
+                        }
+                    }
+                }).addCallback(new Snackbar.Callback() {
+            @Override
+            public void onDismissed(Snackbar snackbar, int event) {
+                Log.d(TAG, "Snackbar dismissed: " + event);
+                if(event != Snackbar.Callback.DISMISS_EVENT_ACTION && event != Snackbar.Callback.DISMISS_EVENT_CONSECUTIVE) {
+                    mTestResultsRef.child(testResult.getKey()).removeValue();
+                }
+            }
+        }).show();
+    }
+
     @Override
     public TestResultAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d("CreateViewHolder", "Created View Holder");
+        Log.d(TAG, "Created View Holder");
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.test_results_row_view, parent, false);
         return new ViewHolder(view);
     }
@@ -74,9 +107,8 @@ public class TestResultAdapter extends RecyclerView.Adapter<TestResultAdapter.Vi
         return mTestResults.size();
     }
 
-    public interface Callback {
-        // TODO: Update argument type and name
-        void onTestSelected(TestResult testResult);
+    public interface NavActivityCallback {
+        void onTestLongPressed(TestResult testResult, View v, int position);
     }
 
     class TestResultChildEventListener implements ChildEventListener {
@@ -84,32 +116,55 @@ public class TestResultAdapter extends RecyclerView.Adapter<TestResultAdapter.Vi
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
             TestResult testResult = dataSnapshot.getValue(TestResult.class);
+            testResult.setKey(dataSnapshot.getKey());
             mTestResults.add(0, testResult);
-            notifyDataSetChanged();
+            mRecyclerView.getLayoutManager().scrollToPosition(0);
+            notifyItemInserted(0);
         }
 
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            String key = dataSnapshot.getKey();
+            TestResult updatedTestResult = dataSnapshot.getValue(TestResult.class);
 
+            int i = 0;
+            for(TestResult testResult : mTestResults) {
+                if(testResult.getKey().equals(key)) {
+                    testResult.setValues(updatedTestResult);
+                    notifyItemChanged(i);
+                    return;
+                }
+                i++;
+            }
         }
 
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
+            String key = dataSnapshot.getKey();
 
+            int i = 0;
+            for(TestResult testResult : mTestResults) {
+                if(testResult.getKey().equals(key)) {
+                    mTestResults.remove(i);
+                    notifyItemRemoved(i);
+                    return;
+                }
+                i++;
+            }
         }
 
         @Override
         public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
+            // empty
         }
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
-
+            Log.d(TAG, "Database error: " + databaseError);
         }
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         ImageView mImageView;
         TextView mTestResultDateTextView;
         TextView mTestResultPercentageTextView;
@@ -119,6 +174,22 @@ public class TestResultAdapter extends RecyclerView.Adapter<TestResultAdapter.Vi
             mImageView = (ImageView) itemView.findViewById(R.id.image_button);
             mTestResultDateTextView = (TextView) itemView.findViewById(R.id.test_date_text_view);
             mTestResultPercentageTextView = (TextView) itemView.findViewById(R.id.test_percentage_text_view);
+
+            itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            // opens the next activity/fragment
+
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            Log.d(TAG, "Test Result Long Pressed");
+            mCallback.onTestLongPressed(mTestResults.get(getAdapterPosition()), v, getAdapterPosition());
+            return true;
         }
     }
 }

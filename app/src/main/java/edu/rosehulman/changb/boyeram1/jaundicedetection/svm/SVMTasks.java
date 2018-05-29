@@ -13,16 +13,18 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 import edu.rosehulman.changb.boyeram1.jaundicedetection.R;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResult;
 
 public class SVMTasks {
-	public static final String TAG = "JaundiceDetection";
+	public static final String TAG = "JD-SVMTasks";
 	public static final int MEDIA_TYPE_IMAGE = 1;
-	public static final String P = "Performance";
+	public static final String P = "JD-Performance";
 	public static final int BLOCK_SIZE = 7;
 	private static final int NUMBER_OF_FEATURES = 6;
 
 	private Context mContext;
     private SVMConsumer mSVMConsumer;
+    private TestResult mTestResult;
 
     // SVM
 	private SVM mSVM;
@@ -38,12 +40,15 @@ public class SVMTasks {
         this.mSVMConsumer = mSVMConsumer;
     }
 
-	public void sendBitmapToSVM(Bitmap imageBitmap) {
+	public void sendBitmapToSVM(Bitmap imageBitmap, TestResult testResult) {
         Log.d(TAG, "Starting SVM Analysis");
+        mTestResult = testResult;
         int allPixels[] = new int[imageBitmap.getWidth()
                 * imageBitmap.getHeight()];
         imageBitmap.getPixels(allPixels, 0, imageBitmap.getWidth(), 0, 0,
                 imageBitmap.getWidth(), imageBitmap.getHeight());
+        Log.d(TAG, "Loaded bitmap into int pixel array: " + imageBitmap.getWidth() + " x " + imageBitmap.getHeight());
+        Log.d(TAG, "int pixel array size: " + allPixels.length);
         if (mIsSVMReady) {
             start = System.currentTimeMillis();
             new SVMForwardAsyncTask(imageBitmap.getWidth(),
@@ -64,7 +69,7 @@ public class SVMTasks {
 			// Create the storage directory if it does not exist
 			if (!logsStorageDir.exists()) {
 				if (!logsStorageDir.mkdirs()) {
-					Log.d(TAG, "failed to create log directory");
+					Log.d(P, "failed to create log directory");
 				}
 			}
 			File logFile;
@@ -98,7 +103,8 @@ public class SVMTasks {
 			this.imageWidth = imageWidth;
 			this.imageHeight = imageHeight;
 			this.selectedBlockSize = selectedBlockSize;
-		}
+            Log.d(TAG, "SVM forward task created");
+        }
 
 		protected void onPostExecute(Double result) {
 			end = System.currentTimeMillis();
@@ -106,7 +112,7 @@ public class SVMTasks {
 			Log.d(TAG, String.format("Total time: %.3fs, for %d features",
 					totalTime / 1000.0, mSelectedNumBlocks));
 			new LogRuntimesAsyncTask().execute(new int [] {mSelectedNumBlocks, (int) totalTime, imageWidth, imageHeight});
-			mSVMConsumer.onImageProcessed(result);
+			mSVMConsumer.onImageProcessed(mTestResult, result);
 		}
 
 		@Override
@@ -116,6 +122,10 @@ public class SVMTasks {
 
 		private double[] extractFeatures(int[] img) {
 			double[] features = new double[294];
+            for(int i = 0; i < 294; i++) {
+                features[i] = img[i];
+            }
+            Log.d(TAG, "Extracted " + features.length + " features");
 			return normalizeFeatures(features);
 		}
 
@@ -131,6 +141,7 @@ public class SVMTasks {
 
 			return normalized;
 		}
+
 	}
 
 	private class GetSVMAsyncTask extends AsyncTask<Void, Void, SVM> {
@@ -156,6 +167,6 @@ public class SVMTasks {
 	}
 
     public interface SVMConsumer {
-        void onImageProcessed(Double result);
+        void onImageProcessed(TestResult testResult, Double result);
     }
 }

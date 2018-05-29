@@ -29,13 +29,14 @@ import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResult;
 public class NavActivity extends AppCompatActivity
         implements
         NavigationView.OnNavigationItemSelectedListener,
-        TestResultAdapter.Callback,
+        TestResultAdapter.NavActivityCallback,
         ChildAdapter.NavActivityCallback {
 
     private String mKeyOfFamilyOfChild;
     private FloatingActionButton mFab;
-    private Family mFamilyName;
+    private Family mFamily;
     private ChildListFragment mChildListFragment;
+    private TestResultListFragment mTestResultListFragment;
     private NearbyFragment mNearbyFragment;
 
     @Override
@@ -46,8 +47,8 @@ public class NavActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
-        mFamilyName = intent.getParcelableExtra(LoginActivity.EXTRA_FAMILY);
-        mKeyOfFamilyOfChild = mFamilyName.getKey();
+        mFamily = intent.getParcelableExtra(LoginActivity.EXTRA_FAMILY);
+        mKeyOfFamilyOfChild = mFamily.getKey();
 
         mFab = (FloatingActionButton) findViewById(R.id.fab_nav);
 
@@ -66,6 +67,10 @@ public class NavActivity extends AppCompatActivity
         mChildListFragment = new ChildListFragment();
         mChildListFragment.setNavActivityCallback(this);
 
+        mTestResultListFragment = new TestResultListFragment();
+        mTestResultListFragment.setNavActivityCallback(this);
+        mTestResultListFragment.setFamily(mFamily);
+
         mNearbyFragment = new NearbyFragment();
 
         if (savedInstanceState == null) {
@@ -80,7 +85,7 @@ public class NavActivity extends AppCompatActivity
             ft.add(R.id.fragment_container, mChildListFragment);
             ft.commit();
         }
-        String familyName = getResources().getString(R.string.family_format,  mFamilyName.getName());
+        String familyName = getResources().getString(R.string.family_format,  mFamily.getName());
         setTitle(familyName);
         nav_familyName.setText(familyName);
     }
@@ -124,7 +129,7 @@ public class NavActivity extends AppCompatActivity
         switch (id) {
             case R.id.nav_child_list:
                 switchTo = mChildListFragment;
-                setTitle(getResources().getString(R.string.family_format, mFamilyName.getName()));
+                setTitle(getResources().getString(R.string.family_format, mFamily.getName()));
                 mFab.show();
                 mFab.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -135,14 +140,12 @@ public class NavActivity extends AppCompatActivity
                 mFab.setImageResource(R.drawable.ic_child_add);
                 break;
             case R.id.nav_test_list:
-                final TestResultListFragment testResultListFragment = new TestResultListFragment();
-                testResultListFragment.setNavActivityCallback(this);
-                switchTo = testResultListFragment;
+                switchTo = mTestResultListFragment;
                 mFab.show();
                 mFab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        testResultListFragment.onFABClicked();
+                        mTestResultListFragment.onFABClicked();
                     }
                 });
                 mFab.setImageResource(R.drawable.ic_library_add);
@@ -189,8 +192,7 @@ public class NavActivity extends AppCompatActivity
     }
 
     @Override
-    public void onTestSelected(TestResult testResult) {
-
+    public void onTestLongPressed(TestResult testResult, View v, int position) {
+        mTestResultListFragment.onTestLongPressed(testResult, v, position);
     }
-
 }

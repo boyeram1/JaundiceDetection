@@ -1,5 +1,7 @@
 package edu.rosehulman.changb.boyeram1.jaundicedetection.utils;
 
+import android.util.Log;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -15,8 +17,11 @@ import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Child;
 
 public class Utils {
 
+    private static String TAG = "JD-Utils";
+
     public static void getChildNameByKey(final FragmentNeedingChildList fragment) {
         String childKey = SharedPrefsUtils.getCurrentChildKey();
+        Log.d(TAG, "Getting child name by key: " + childKey);
         DatabaseReference childRef = FirebaseDatabase.getInstance().getReference("children")
                 .child(childKey)
                 .child("name");
@@ -36,8 +41,9 @@ public class Utils {
 
     public static void getCurrentChildren(final FragmentNeedingChildList fragment) {
         String familyKey = SharedPrefsUtils.getCurrentFamilyKey();
+        Log.d(TAG, "Getting children with familyKey: " + familyKey);
         DatabaseReference childRef = FirebaseDatabase.getInstance().getReference("children");
-        Query myChildRef = childRef.orderByChild("familyKey").equalTo(familyKey);
+        Query myChildRef = childRef.child(familyKey);
         myChildRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -49,8 +55,10 @@ public class Utils {
                     Child child = snapshot.getValue(Child.class);
                     child.setKey(childKey);
                     currentChildList.add(child);
+                    Log.d(TAG, "Added child with name, key: " + child.getName() + ", " + child.getKey());
                 }
                 fragment.setCurrentChildList(currentChildList);
+                Log.d(TAG, "Set current child list");
             }
 
             @Override

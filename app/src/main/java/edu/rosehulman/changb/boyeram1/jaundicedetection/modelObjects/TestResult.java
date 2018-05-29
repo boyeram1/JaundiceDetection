@@ -1,12 +1,15 @@
 package edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.database.Exclude;
 
 /**
  * Created by changb on 4/22/2018.
  */
 
-public class TestResult {
+public class TestResult implements Parcelable {
 
     private String key;
     private String childKey;
@@ -22,6 +25,25 @@ public class TestResult {
         this.photo = photo;
         this.result = result;
     }
+
+    protected TestResult(Parcel in) {
+        key = in.readString();
+        childKey = in.readString();
+        testResultTime = in.readParcelable(TestResultTime.class.getClassLoader());
+        result = in.readInt();
+    }
+
+    public static final Creator<TestResult> CREATOR = new Creator<TestResult>() {
+        @Override
+        public TestResult createFromParcel(Parcel in) {
+            return new TestResult(in);
+        }
+
+        @Override
+        public TestResult[] newArray(int size) {
+            return new TestResult[size];
+        }
+    };
 
     @Exclude
     public String getKey() {
@@ -65,5 +87,18 @@ public class TestResult {
         this.testResultTime = testResult.getTestResultTime();
         this.photo = testResult.getPhoto();
         this.result = testResult.getResult();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(key);
+        dest.writeString(childKey);
+        dest.writeParcelable(testResultTime, flags);
+        dest.writeInt(result);
     }
 }

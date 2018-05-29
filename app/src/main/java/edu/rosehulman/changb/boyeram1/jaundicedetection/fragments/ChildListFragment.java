@@ -195,8 +195,8 @@ public class ChildListFragment extends Fragment {
                         break;
                     case R.id.menu_popup_remove:
                         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder((Context) mNavActivityCallback);
-                        builder.setTitle(R.string.login_remove_title);
-                        builder.setMessage(R.string.login_remove_message);
+                        builder.setTitle(R.string.popup_remove_title);
+                        builder.setMessage(R.string.popup_remove_message);
                         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

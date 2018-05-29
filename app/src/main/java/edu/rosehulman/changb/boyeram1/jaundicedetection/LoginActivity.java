@@ -1,17 +1,12 @@
 package edu.rosehulman.changb.boyeram1.jaundicedetection;
 
-import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +22,6 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 
-import edu.rosehulman.changb.boyeram1.jaundicedetection.NotificationUtils.NotificationPublisher;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.FamilyAdapter;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Family;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.utils.SharedPrefsUtils;
@@ -63,8 +57,6 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Lo
         this.mFamilyAdapter = new FamilyAdapter(this, view);
         view.setAdapter(this.mFamilyAdapter);
         setTitle(getString(R.string.loginTitle));
-
-        scheduleNotification(getNotification(getString(R.string.notification_content)), 5000);
     }
 
     public void showAddEditDialog(final Family family) {
@@ -145,8 +137,8 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Lo
                         break;
                     case R.id.menu_popup_remove:
                         AlertDialog.Builder builder = new AlertDialog.Builder((Context) LoginActivity.this );
-                        builder.setTitle(R.string.login_remove_title);
-                        builder.setMessage(R.string.login_remove_message);
+                        builder.setTitle(R.string.popup_remove_title);
+                        builder.setMessage(R.string.popup_remove_message);
                         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -163,28 +155,7 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Lo
         popupMenu.show();
     }
 
-    private void scheduleNotification(Notification notification, int delay) {
-        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
-        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-    }
-
-    private Notification getNotification(String content) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "default");
-        builder.setContentTitle(getString(R.string.app_name));
-        builder.setContentText(content);
-        builder.setSmallIcon(R.drawable.test_tube);
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-        PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(pi);
-        Log.d("Notifications", "notification gotten");
-        return builder.build();
-    }
 
     private void checkPermissions() {
         // Check to see if we already have permissions

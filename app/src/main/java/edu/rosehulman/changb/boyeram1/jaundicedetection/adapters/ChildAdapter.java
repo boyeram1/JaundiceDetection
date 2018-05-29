@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.R;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.BirthDateTime;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Child;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.utils.SharedPrefsUtils;
 
 /**
  * Created by boyeram on 4/16/18.
@@ -29,11 +31,11 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
 
     private NavActivityCallback mCallback;
     private DatabaseReference mChildrenRef;
+    private String mFamilyKey;
 
     public ChildAdapter(NavActivityCallback callback, RecyclerView recyclerView) {
         mCallback = callback;
         mRecyclerView = recyclerView;
-
         mChildrenRef = FirebaseDatabase.getInstance().getReference("children").child(mCallback.getKeyOfFamilyOfChild());
         mChildrenRef.addChildEventListener(new ChildrenChildEventListener());
         mChildrenRef.keepSynced(true);
@@ -72,6 +74,7 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
     public void updateChild(Child child, String name, BirthDateTime birthDateTime) {
         child.setValues(new Child(name, birthDateTime));
         mChildrenRef.child(child.getKey()).setValue(child);
+        SharedPrefsUtils.setCurrentChildKey(child.getKey());
     }
 
     @Override
@@ -96,6 +99,7 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
             child.setKey(dataSnapshot.getKey());
             mChildren.add(0, child);
             notifyDataSetChanged();
+            SharedPrefsUtils.setCurrentChildKey(child.getKey());
         }
 
         @Override
