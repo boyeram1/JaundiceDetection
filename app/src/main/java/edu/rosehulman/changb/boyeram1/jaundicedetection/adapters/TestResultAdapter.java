@@ -1,37 +1,50 @@
 package edu.rosehulman.changb.boyeram1.jaundicedetection.adapters;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.rosehulman.changb.boyeram1.jaundicedetection.R;
-import edu.rosehulman.changb.boyeram1.jaundicedetection.fragments.TestResultListFragment;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResult;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResultTime;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.utils.SharedPrefsUtils;
 
 /**
  * Created by changb on 4/22/2018.
  */
-
 public class TestResultAdapter extends RecyclerView.Adapter<TestResultAdapter.ViewHolder> {
 
-    private Context mContext;
+    private ChildAdapter.NavActivityCallback mCallback;
     private List<TestResult> mTestResults;
-    private Callback mCallback;
+    private DatabaseReference mTestResultsRef;
 
-    public TestResultAdapter(Context context, Callback callback) {
-        this.mCallback = callback;
-        this.mTestResults = new ArrayList<>();
-        this.mContext = context;
-        mTestResults.add(new TestResult("0", "Abe", 1, new TestResultTime(1,1,1,1,1)));
-        mTestResults.add(new TestResult("1", "Blinkin", 100, new TestResultTime(2,3,4,5,6)));
+    public TestResultAdapter(ChildAdapter.NavActivityCallback callback) {
+        mTestResults = new ArrayList<>();
+        mCallback = callback;
+
+        mTestResultsRef = FirebaseDatabase.getInstance().getReference("test-results");
+        mTestResultsRef.keepSynced(true);
+        String childKey = SharedPrefsUtils.getCurrentChildKey();
+        Query myTestResultsRef = mTestResultsRef.orderByChild("childKey").equalTo(childKey);
+        myTestResultsRef.addChildEventListener(new TestResultChildEventListener());
+    }
+
+    public void addTestResult(TestResult testResult) {
+        mTestResultsRef.push().setValue(testResult);
     }
 
     @Override
@@ -44,8 +57,16 @@ public class TestResultAdapter extends RecyclerView.Adapter<TestResultAdapter.Vi
     @Override
     public void onBindViewHolder(TestResultAdapter.ViewHolder holder, int position) {
         final TestResult testResult = mTestResults.get(position);
-        holder.mTestResultChildName.setText(testResult.getChildName());
-        holder.mTestResultPercentage.setText(Integer.toString(testResult.getPercentage()));
+
+        if(testResult.getResult() >= 50) {
+            holder.mImageView.setImageResource(R.drawable.ic_bad);
+        } else {
+            holder.mImageView.setImageResource(R.drawable.ic_good);
+        }
+
+        TestResultTime testResultTime = testResult.getTestResultTime();
+        holder.mTestResultDateTextView.setText(testResultTime.dateToString() + " " + testResultTime.timeToString());
+        holder.mTestResultPercentageTextView.setText(testResult.getResult() + "% chance of jaundice");
     }
 
     @Override
@@ -58,14 +79,46 @@ public class TestResultAdapter extends RecyclerView.Adapter<TestResultAdapter.Vi
         void onTestSelected(TestResult testResult);
     }
 
+    class TestResultChildEventListener implements ChildEventListener {
+
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            TestResult testResult = dataSnapshot.getValue(TestResult.class);
+            mTestResults.add(0, testResult);
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView mTestResultChildName;
-        TextView mTestResultPercentage;
+        ImageView mImageView;
+        TextView mTestResultDateTextView;
+        TextView mTestResultPercentageTextView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            mTestResultChildName = (TextView) itemView.findViewById(R.id.test_result_child_name_text_view);
-            mTestResultPercentage = (TextView) itemView.findViewById(R.id.test_result_percentage_text_view);
+            mImageView = (ImageView) itemView.findViewById(R.id.image_button);
+            mTestResultDateTextView = (TextView) itemView.findViewById(R.id.test_date_text_view);
+            mTestResultPercentageTextView = (TextView) itemView.findViewById(R.id.test_percentage_text_view);
         }
     }
 }

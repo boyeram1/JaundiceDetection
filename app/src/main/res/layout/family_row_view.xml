@@ -27,7 +27,7 @@
                 android:layout_alignParentTop="true"
                 android:padding="@dimen/card_text_padding"
                 android:text="New Text"
-                android:textSize="@dimen/card_text_size"
+                android:textSize="@dimen/family_card_text_size"
                 android:textStyle="bold" />
         </RelativeLayout>
 

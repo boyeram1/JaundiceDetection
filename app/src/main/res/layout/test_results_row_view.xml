@@ -14,40 +14,39 @@
         android:layout_marginRight="@dimen/margin_card"
         android:elevation="@dimen/elevation_card">
 
-        <TableLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="horizontal"
             android:layout_margin="@dimen/margin_card">
 
-            <TableRow
+            <ImageView
+                android:id="@+id/image_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/margin_card"/>
+
+            <TextView
+                android:id="@+id/test_date_text_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="wrap_content"
+                android:padding="@dimen/card_text_padding"
+                android:text="Date of Test"
+                android:textSize="@dimen/card_text_size"
+                android:textStyle="bold"
+                android:layout_toRightOf="@id/image_button"/>
 
-                <ImageButton
-                    android:id="@+id/imageButton"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/ic_launcher_background" />
-
-                <TextView
-                    android:id="@+id/test_result_child_name_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/card_text_padding"
-                    android:text="New Test"
-                    android:textSize="@dimen/card_text_size"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/test_result_percentage_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/card_text_padding"
-                    android:text="XXX%"
-                    android:textSize="@dimen/card_text_size" />
-            </TableRow>
-
-        </TableLayout>
+            <TextView
+                android:id="@+id/test_percentage_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/card_text_padding"
+                android:text="% chance of jaundice"
+                android:textSize="@dimen/card_text_size"
+                android:layout_toRightOf="@id/image_button"
+                android:layout_below="@id/test_date_text_view"/>
+        </RelativeLayout>
 
     </android.support.v7.widget.CardView>
 

@@ -2,16 +2,17 @@ package edu.rosehulman.changb.boyeram1.jaundicedetection;
 
 import android.app.AlarmManager;
 import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,10 +30,13 @@ import android.widget.PopupMenu;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.NotificationUtils.NotificationPublisher;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.FamilyAdapter;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Family;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.utils.SharedPrefsUtils;
 
 public class LoginActivity extends AppCompatActivity implements FamilyAdapter.LoginActivityCallback {
 
     protected static final String EXTRA_FAMILY = "FAMILY_NAME";
+    private static final int WRITE_EXTERNAL_STORAGE_PERMISSION = 3;
+
 
     private FamilyAdapter mFamilyAdapter;
 
@@ -42,6 +46,8 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Lo
         setContentView(R.layout.activity_login);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        checkPermissions();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_login);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -58,8 +64,7 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Lo
         view.setAdapter(this.mFamilyAdapter);
         setTitle(getString(R.string.loginTitle));
 
-//        testNotify();
-        scheduleNotification(getNotification("5 sec delay"), 5000);
+        scheduleNotification(getNotification(getString(R.string.notification_content)), 5000);
     }
 
     public void showAddEditDialog(final Family family) {
@@ -115,6 +120,8 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Lo
         Log.d("Family onSelect", family.getName() + " selected");
         Intent intent = new Intent(this, NavActivity.class);
         intent.putExtra(EXTRA_FAMILY, family);
+        SharedPrefsUtils.setContext(this);
+        SharedPrefsUtils.setCurrentFamilyKey(family.getKey());
         startActivity(intent);
     }
 
@@ -157,7 +164,6 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Lo
     }
 
     private void scheduleNotification(Notification notification, int delay) {
-
         Intent notificationIntent = new Intent(this, NotificationPublisher.class);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
@@ -170,9 +176,9 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Lo
 
     private Notification getNotification(String content) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "default");
-        builder.setContentTitle("Scheduled Notification");
+        builder.setContentTitle(getString(R.string.app_name));
         builder.setContentText(content);
-        builder.setSmallIcon(android.R.mipmap.sym_def_app_icon);
+        builder.setSmallIcon(R.drawable.test_tube);
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
         PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pi);
@@ -180,24 +186,35 @@ public class LoginActivity extends AppCompatActivity implements FamilyAdapter.Lo
         return builder.build();
     }
 
-    public void testNotify() {
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("default",
-                    "Jaundice Channel",
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            channel.setDescription("YOUR_NOTIFICATION_CHANNEL_DISCRIPTION");
-            mNotificationManager.createNotificationChannel(channel);
+    private void checkPermissions() {
+        // Check to see if we already have permissions
+        if (ContextCompat.checkSelfPermission(this,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                PackageManager.PERMISSION_GRANTED) {
+            // If we do not, request them from the user
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    WRITE_EXTERNAL_STORAGE_PERMISSION);
         }
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "default")
-                .setSmallIcon(android.R.mipmap.sym_def_app_icon) // notification icon
-                .setContentTitle("test title") // title for notification
-                .setContentText("test content")// message for notification
-                .setAutoCancel(true); // clear notification after click
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-        PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(pi);
-        mNotificationManager.notify(0, mBuilder.build());
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case WRITE_EXTERNAL_STORAGE_PERMISSION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted
+                } else {
+                    // permission denied
+                }
+                return;
+            }
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
 }

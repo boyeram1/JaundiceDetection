@@ -2,8 +2,11 @@ package edu.rosehulman.changb.boyeram1.jaundicedetection.fragments;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -128,7 +131,13 @@ public class NearbyFragment extends Fragment implements GoogleApiClient.Connecti
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
             Log.d("onLocationChanged", "Removing Location Updates");
         }
-        if(isFirstTime) {
+        ConnectivityManager cm =
+                (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        if(isFirstTime && isConnected) {
             String Hospital = getString(R.string.nearby_hospital_text);
             mMap.clear();
             String url = getUrl(latitude, longitude, Hospital);

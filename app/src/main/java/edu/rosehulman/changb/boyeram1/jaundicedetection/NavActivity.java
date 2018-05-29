@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -17,12 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.ChildAdapter;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.TestResultAdapter;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.fragments.ChildListFragment;
@@ -34,11 +27,14 @@ import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Family;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResult;
 
 public class NavActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, TestResultAdapter.Callback, ChildAdapter.NavActivityCallback {
+        implements
+        NavigationView.OnNavigationItemSelectedListener,
+        TestResultAdapter.Callback,
+        ChildAdapter.NavActivityCallback {
 
     private String mKeyOfFamilyOfChild;
     private FloatingActionButton mFab;
-    private Family mFamily;
+    private Family mFamilyName;
     private ChildListFragment mChildListFragment;
     private NearbyFragment mNearbyFragment;
 
@@ -50,8 +46,8 @@ public class NavActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
-        mFamily = intent.getParcelableExtra(LoginActivity.EXTRA_FAMILY);
-        mKeyOfFamilyOfChild = mFamily.getKey();
+        mFamilyName = intent.getParcelableExtra(LoginActivity.EXTRA_FAMILY);
+        mKeyOfFamilyOfChild = mFamilyName.getKey();
 
         mFab = (FloatingActionButton) findViewById(R.id.fab_nav);
 
@@ -84,7 +80,7 @@ public class NavActivity extends AppCompatActivity
             ft.add(R.id.fragment_container, mChildListFragment);
             ft.commit();
         }
-        String familyName = getResources().getString(R.string.family_format,  mFamily.getName());
+        String familyName = getResources().getString(R.string.family_format,  mFamilyName.getName());
         setTitle(familyName);
         nav_familyName.setText(familyName);
     }
@@ -128,7 +124,7 @@ public class NavActivity extends AppCompatActivity
         switch (id) {
             case R.id.nav_child_list:
                 switchTo = mChildListFragment;
-                setTitle(getResources().getString(R.string.family_format, mFamily.getName()));
+                setTitle(getResources().getString(R.string.family_format, mFamilyName.getName()));
                 mFab.show();
                 mFab.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -139,14 +135,14 @@ public class NavActivity extends AppCompatActivity
                 mFab.setImageResource(R.drawable.ic_child_add);
                 break;
             case R.id.nav_test_list:
-                switchTo = new TestResultListFragment();
-                setTitle(getResources().getString(R.string.test_format, mFamily.getName()));
+                final TestResultListFragment testResultListFragment = new TestResultListFragment();
+                testResultListFragment.setNavActivityCallback(this);
+                switchTo = testResultListFragment;
                 mFab.show();
                 mFab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Snackbar.make(view, "Replace with adding test", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
+                        testResultListFragment.onFABClicked();
                     }
                 });
                 mFab.setImageResource(R.drawable.ic_library_add);

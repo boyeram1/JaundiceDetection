@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="2">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerHorizontal="true"
+        android:padding="20dp">
+
+        <Button
+            android:id="@+id/button_eye"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="@string/eye"
+            android:layout_marginBottom="20dp"
+            android:drawableLeft="@drawable/ic_remove_red_eye_black_24dp"/>
+
+        <Button
+            android:id="@+id/button_cancel_select_image"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="@android:string/cancel"
+            android:drawableLeft="@drawable/ic_cancel_black_24dp"/>
+
+    </LinearLayout>
+</RelativeLayout>
