@@ -56,7 +56,7 @@ public class SVM {
 		for (int svIdx = 0; svIdx < this.nSupportVectors; svIdx++) {
 			double dist2 = squaredistance(outputFeatures,
 					mSupportVectors[svIdx]);
-            Log.d(SVMTasks.TAG, "Dis: " + Double.toString(dist2) + " for " + svIdx);
+            Log.d(SVMTasks.TAG, "Dis: " + Double.toString(dist2) + " for vector " + svIdx);
             switch (source) {
 				case USE_MATLAB_BUILTIN_FOR_TOY_PROBLEM:
 				case USE_MATLAB_BUILTIN_FOR_JAUNDICE:

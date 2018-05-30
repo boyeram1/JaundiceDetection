@@ -40,6 +40,7 @@ public class NearbyFragment extends Fragment implements GoogleApiClient.Connecti
         GoogleApiClient.OnConnectionFailedListener,
         com.google.android.gms.location.LocationListener{
 
+    private static String TAG = "JD-NearbyFrag";
     MapView mMapView;
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
@@ -77,7 +78,7 @@ public class NearbyFragment extends Fragment implements GoogleApiClient.Connecti
                 // For showing a move to my location button
                 if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
                         ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    Log.d("NearbyFrag", "on create view location enabled");
+                    Log.d(TAG, "on create view location enabled");
                     NearbyFragment.this.mMap.setMyLocationEnabled(true);
                 }
                 buildGoogleApiClient();
@@ -88,7 +89,7 @@ public class NearbyFragment extends Fragment implements GoogleApiClient.Connecti
     }
 
     protected synchronized void buildGoogleApiClient() {
-        Log.d("NearbyFrag", "building google Api client");
+        Log.d(TAG, "building google Api client");
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -103,8 +104,6 @@ public class NearbyFragment extends Fragment implements GoogleApiClient.Connecti
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d("onLocationChanged", "entered");
-
         mLastLocation = location;
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
@@ -124,7 +123,7 @@ public class NearbyFragment extends Fragment implements GoogleApiClient.Connecti
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
 
-        Log.d("onLocationChanged", String.format("latitude:%.3f longitude:%.3f",latitude,longitude));
+        Log.d(TAG, String.format("onLocationChanged latitude:%.3f longitude:%.3f",latitude,longitude));
 
         //stop location updates
         if (mGoogleApiClient != null) {
@@ -144,13 +143,13 @@ public class NearbyFragment extends Fragment implements GoogleApiClient.Connecti
             Object[] DataTransfer = new Object[2];
             DataTransfer[0] = mMap;
             DataTransfer[1] = url;
-            Log.d("onMapReadyGen", url);
+            Log.d(TAG, "mapReadyGen" + url);
             GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
             getNearbyPlacesData.execute(DataTransfer);
             Toast.makeText(getActivity(), R.string.nearby_hospital_toast, Toast.LENGTH_LONG).show();
             isFirstTime = false;
         }
-        Log.d("onLocationChanged", "Exit");
+        Log.d(TAG, "onLocationChanged Exit");
     }
 
     @Override
