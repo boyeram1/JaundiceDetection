@@ -154,26 +154,33 @@ public class SVMTasks {
             double R = rSum / pixelCount;
             double G = gSum / pixelCount;
             double B = bSum / pixelCount;
-//            Log.d(TAG, "R: " + R);
-//            Log.d(TAG, "G: " + G);
-//            Log.d(TAG, "B: " + B);
-            features[featureOffset] = R;
-            features[featureOffset + 1] = G;
-            features[featureOffset + 2] = B;
-            features[featureOffset + 3] = R + G + B;
-            features[featureOffset + 4] = R - B;
-            features[featureOffset + 5] = R - 2 * G + B;
+
+            features[featureOffset * NUMBER_OF_FEATURES] = R;
+            features[featureOffset * NUMBER_OF_FEATURES + 1] = G;
+            features[featureOffset * NUMBER_OF_FEATURES + 2] = B;
+            features[featureOffset * NUMBER_OF_FEATURES + 3] = R + G + B;
+            features[featureOffset * NUMBER_OF_FEATURES + 4] = R - B;
+            features[featureOffset * NUMBER_OF_FEATURES + 5] = R - 2 * G + B;
+
+//            Log.d(TAG, featureOffset * NUMBER_OF_FEATURES + " R: " + features[featureOffset * NUMBER_OF_FEATURES]);
+//            Log.d(TAG, featureOffset * NUMBER_OF_FEATURES + 1 + " G: " + features[featureOffset * NUMBER_OF_FEATURES + 1]);
+//            Log.d(TAG, featureOffset * NUMBER_OF_FEATURES + 2 + " B: " + features[featureOffset * NUMBER_OF_FEATURES + 2]);
+//            Log.d(TAG, featureOffset * NUMBER_OF_FEATURES + 3 + " L: " + features[featureOffset * NUMBER_OF_FEATURES + 3]);
+//            Log.d(TAG, featureOffset * NUMBER_OF_FEATURES + 4 + " S: " + features[featureOffset * NUMBER_OF_FEATURES + 4]);
+//            Log.d(TAG, featureOffset * NUMBER_OF_FEATURES + 5 + " T: " + features[featureOffset * NUMBER_OF_FEATURES + 5]);
         }
 
 		private double[] normalizeFeatures(double[] features) {
 			double[] normalized = new double[BLOCK_SIZE * BLOCK_SIZE * NUMBER_OF_FEATURES]; // 294
 
-			for (int numSector = 0; numSector < BLOCK_SIZE * BLOCK_SIZE; numSector++) {
-				for (int numFeature = 0; numFeature < NUMBER_OF_FEATURES; numFeature++) {
-					normalized[numFeature + numSector * NUMBER_OF_FEATURES] =
-                            (features[numSector * numFeature + numFeature] - SVMData.NORMALIZATION_MINS[numFeature])
-							/ SVMData.NORMALIZATION_MAXES[numFeature];
-//					Log.d(TAG, "normalized: " + features[numSector * numFeature + numFeature] + " to " + normalized[numFeature + numSector * NUMBER_OF_FEATURES]);
+			for (int row = 0; row < BLOCK_SIZE * BLOCK_SIZE; row++) {
+				for (int col = 0; col < NUMBER_OF_FEATURES; col++) {
+				    int elementNum = row * NUMBER_OF_FEATURES + col;
+					normalized[elementNum] =
+                            (features[elementNum] - SVMData.NORMALIZATION_MINS[col])
+							/ SVMData.NORMALIZATION_MAXES[col];
+//					Log.d(TAG, "normalized element: " + elementNum + " val: "
+//                            + features[elementNum] + " to " + normalized[elementNum]);
 				}
 			}
             Log.d(TAG, "Normalized " + normalized.length + " elements");
@@ -190,7 +197,7 @@ public class SVMTasks {
 		protected void onPostExecute(SVM result) {
 			mIsSVMReady = true;
 			mSVM = result;
-			Log.d(TAG, "done Loading SVM");
+			Log.d(TAG, "Done Loading SVM");
 		}
 
 		@Override

@@ -9,17 +9,17 @@ import java.util.Scanner;
 
 /**
  * A trained support vector machine for Gaussian RBF kernel functions.
- * 
+ *
  * I hacked MATLAB to get it to produce the real-valued output.
  * 2013a/toolbox/stats/stats/ svmclassify.m /private/svmdecision.m
- * 
- * 
+ *
+ *
  * @author Matt Boutell. Created Jan 7, 2013.
  */
 public class SVM {
 
 	enum DataSource {
-		USE_MATLAB_BUILTIN_FOR_TOY_PROBLEM, USE_SCHWAIGHOFER_FOR_TOY_PROBLEM, USE_MATLAB_BUILTIN_FOR_JAUNDICE, USE_SCHWAIGHOFER_FOR_JAUNDICE
+		USE_MATLAB_BUILTIN_FOR_TOY_PROBLEM, USE_SCHWAIGHOFER_FOR_TOY_PROBLEM, USE_MATLAB_BUILTIN_FOR_JAUNDICE, USE_SCHWAIGHOFER_FOR_JAUNDICE, USE_MATLAB_BUILTIN_FOR_SUNSET
 	};
 
 	private static DataSource source = DataSource.USE_MATLAB_BUILTIN_FOR_JAUNDICE;
@@ -29,7 +29,7 @@ public class SVM {
 	private double[][] mSupportVectors;
 	private double[] mAlphas;
 	private double bias;
-	private double sigma = 3; // TODO: read from file
+	private double sigma = 3;
 
 	/**
 	 * Create a new empty, untrained SVM.
@@ -44,10 +44,10 @@ public class SVM {
 	 * Scholkopf uses for rbf kernel, K =
 	 * exp(-sum((X1i-X2i)^2)/(NET.kernelpar(1)*NET.nin)) =
 	 * exp(-sqds/(sigma*dim))
-	 * 
+	 *
 	 * MATLAB built-in uses: -sqds / (2*sigma^2) [see rbf_kernel.m], and so do
 	 * other other sources.
-	 * 
+	 *
 	 * @param outputFeatures
 	 */
 	public double forward(double[] outputFeatures) {
@@ -56,19 +56,31 @@ public class SVM {
 		for (int svIdx = 0; svIdx < this.nSupportVectors; svIdx++) {
 			double dist2 = squaredistance(outputFeatures,
 					mSupportVectors[svIdx]);
-			switch (source) {
-			case USE_MATLAB_BUILTIN_FOR_TOY_PROBLEM:
-			case USE_MATLAB_BUILTIN_FOR_JAUNDICE:
-				y1 += mAlphas[svIdx]
-						* Math.exp(-dist2 * 1/Math.sqrt (2));
-				break;
-			case USE_SCHWAIGHOFER_FOR_TOY_PROBLEM:
-			case USE_SCHWAIGHOFER_FOR_JAUNDICE:
-				y1 += mAlphas[svIdx]
-						* Math.exp(-dist2 / (this.sigma * this.sigma));
+            Log.d(SVMTasks.TAG, "Dis: " + Double.toString(dist2) + " for " + svIdx);
+            switch (source) {
+				case USE_MATLAB_BUILTIN_FOR_TOY_PROBLEM:
+				case USE_MATLAB_BUILTIN_FOR_JAUNDICE:
+				    double res = mAlphas[svIdx]
+                            * Math.exp(-dist2 * 1/Math.sqrt (2));
+                    Log.d(SVMTasks.TAG, "SVM comp: " + Double.toString(res));
+                    y1 += res;
+                    Log.d(SVMTasks.TAG, "SVM total: " + Double.toString(y1));
+                    break;
+				case USE_MATLAB_BUILTIN_FOR_SUNSET:
+				    double res2 = mAlphas[svIdx]
+                            * Math.exp(-dist2 / (2 * this.sigma * this.sigma));
+                    Log.d(SVMTasks.TAG, "SVM comp: " + Double.toString(res2));
+                    y1 += res2;
+                    Log.d(SVMTasks.TAG, "SVM total: " + Double.toString(y1));
+                    break;
+				case USE_SCHWAIGHOFER_FOR_TOY_PROBLEM:
+				case USE_SCHWAIGHOFER_FOR_JAUNDICE:
+					y1 += mAlphas[svIdx]
+							* Math.exp(-dist2 / (this.sigma * this.sigma));
 			}
 //			Log.d(SVMTasks.TAG, String.format("forwarding %d", svIdx));
 		}
+		Log.d(SVMTasks.TAG, Double.toString(y1));
 		return y1;
 	}
 
@@ -77,10 +89,10 @@ public class SVM {
 		double distance = 0.0;
 		assert (x.length == y.length);
 		assert (x.length == this.dimension);
-		for (int i = 0; i < x.length; i++) {
-			distance += (x[i] - y[i]) * (x[i] - y[i]);
-		}
-		return distance;
+        for (int i = 0; i < x.length; i++) {
+            distance += (x[i] - y[i]) * (x[i] - y[i]);
+        }
+		return Math.sqrt(distance);
 	}
 
 	@Override
@@ -103,17 +115,17 @@ public class SVM {
 	}
 
 	private void readParameters() {
-//		long start = System.currentTimeMillis();
+		long start = System.currentTimeMillis();
 		String trainedSVMFile = "trained_jaundice_android";
-		Log.d(SVMTasks.TAG, trainedSVMFile);
+		Log.d(SVMTasks.TAG, "Loading trained SVM from file: " + trainedSVMFile);
 		int trainedSVMFileID = mContext.getResources().getIdentifier(trainedSVMFile, "raw", mContext.getPackageName());
-		Log.d(SVMTasks.TAG, trainedSVMFileID + "");
+		Log.d(SVMTasks.TAG, "Android resourceID: " + trainedSVMFileID);
 		InputStream inputStream = mContext.getResources().openRawResource(trainedSVMFileID);
 		Scanner fileScanner = new Scanner(inputStream);
 		this.sigma = SVMData.sigmas[0];
 		Log.d(SVMTasks.TAG, String.format("sigma : %.8f", this.sigma));
 		this.nSupportVectors = SVMData.nSupportVectors[0];
-				Log.d(SVMTasks.TAG,	String.format("numSupo : %d", this.nSupportVectors));
+		Log.d(SVMTasks.TAG,	String.format("numSupVec : %d", this.nSupportVectors));
 		this.dimension = SVMData.dimensions[0];
 		Log.d(SVMTasks.TAG, String.format("dim : %d", this.dimension));
 		this.bias = SVMData.biases[0];
@@ -136,10 +148,10 @@ public class SVM {
 			mAlphas[svIdx] = Double.parseDouble(alphas[svIdx]);
 		}
 		fileScanner.close();
-//		long end = System.currentTimeMillis();
-//		long total = end - start;
-//		Log.d(SVMTasks.TAG, String.format("totaltime reading %d", total));
-//		Log.d(SVMTasks.TAG, String.format("msupport=%d mdim=%d ", nSupportVectors, this.dimension));
+		long end = System.currentTimeMillis();
+		long total = end - start;
+		Log.d(SVMTasks.TAG, String.format("Totaltime loading trained SVM: %d ms", total));
+		Log.d(SVMTasks.TAG, String.format("numSupport=%d numDim=%d ", nSupportVectors, this.dimension));
 
 	}
 }
