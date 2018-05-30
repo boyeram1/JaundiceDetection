@@ -1,7 +1,6 @@
 package edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import com.google.firebase.database.Exclude;
 
 import com.google.firebase.database.Exclude;
 
@@ -9,7 +8,7 @@ import com.google.firebase.database.Exclude;
  * Created by changb on 4/22/2018.
  */
 
-public class TestResult implements Parcelable {
+public class TestResult {
 
     private String key;
     private String childKey;
@@ -18,6 +17,7 @@ public class TestResult implements Parcelable {
     private int result;
 
     public TestResult() {}
+<<<<<<< HEAD
 
     public TestResult(String childKey, TestResultTime testResultTime, Photo photo, int result) {
         this.childKey = childKey;
@@ -31,20 +31,50 @@ public class TestResult implements Parcelable {
         childKey = in.readString();
         testResultTime = in.readParcelable(TestResultTime.class.getClassLoader());
         result = in.readInt();
+=======
+
+    public TestResult(String childKey, TestResultTime testResultTime, Photo photo, int result) {
+        this.childKey = childKey;
+        this.testResultTime = testResultTime;
+        this.photo = photo;
+        this.result = result;
     }
 
-    public static final Creator<TestResult> CREATOR = new Creator<TestResult>() {
-        @Override
-        public TestResult createFromParcel(Parcel in) {
-            return new TestResult(in);
-        }
+    @Exclude
+    public String getKey() {
+        return this.key;
+    }
 
-        @Override
-        public TestResult[] newArray(int size) {
-            return new TestResult[size];
-        }
-    };
+    public void setKey(String key) {
+        this.key = key;
+    }
 
+    public String getChildKey() {
+        return this.childKey;
+    }
+
+    public void setChildKey(String key) {
+        this.childKey = key;
+    }
+
+    public TestResultTime getTestResultTime() {
+        return testResultTime;
+    }
+
+    public void setTestResultTime(TestResultTime testResultTime) {
+        this.testResultTime = testResultTime;
+>>>>>>> 5ead7cba6f04e51bb64fb19dd2d5568a28824121
+    }
+
+    public Photo getPhoto() {
+        return photo;
+    }
+
+    public int getResult() {
+        return result;
+    }
+
+<<<<<<< HEAD
     @Exclude
     public String getKey() {
         return this.key;
@@ -100,5 +130,16 @@ public class TestResult implements Parcelable {
         dest.writeString(childKey);
         dest.writeParcelable(testResultTime, flags);
         dest.writeInt(result);
+=======
+    public void setResult(int result) {
+        this.result = result;
+    }
+
+    public void setValues(TestResult testResult) {
+        this.childKey = testResult.getChildKey();
+        this.testResultTime = testResult.getTestResultTime();
+        this.photo = testResult.getPhoto();
+        this.result = testResult.getResult();
+>>>>>>> 5ead7cba6f04e51bb64fb19dd2d5568a28824121
     }
 }

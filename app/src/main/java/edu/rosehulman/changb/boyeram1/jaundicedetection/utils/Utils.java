@@ -1,11 +1,17 @@
 package edu.rosehulman.changb.boyeram1.jaundicedetection.utils;
 
+<<<<<<< HEAD
+=======
+import android.app.Activity;
+import android.support.v4.app.Fragment;
+>>>>>>> 5ead7cba6f04e51bb64fb19dd2d5568a28824121
 import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+<<<<<<< HEAD
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -68,6 +74,15 @@ public class Utils {
         });
     }
 
+=======
+import com.google.firebase.database.ValueEventListener;
+
+import edu.rosehulman.changb.boyeram1.jaundicedetection.Constants;
+import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Family;
+
+public class Utils {
+
+>>>>>>> 5ead7cba6f04e51bb64fb19dd2d5568a28824121
     public static void getCurrentFamilyNameForToolbar(final ActivityWithToolbar activity) {
         String currentFamilyKey = SharedPrefsUtils.getCurrentFamilyKey();
         DatabaseReference familyRef = FirebaseDatabase.getInstance().getReference()
@@ -87,11 +102,14 @@ public class Utils {
         });
     }
 
+<<<<<<< HEAD
     public interface FragmentNeedingChildList {
         void setCurrentChildList(List<Child> currentChildList);
         void setToolbarTitle(String childName);
     }
 
+=======
+>>>>>>> 5ead7cba6f04e51bb64fb19dd2d5568a28824121
     public interface ActivityWithToolbar {
         void setToolbarTitle(String familyName);
     }

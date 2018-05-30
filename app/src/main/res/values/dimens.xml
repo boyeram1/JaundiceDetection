@@ -3,7 +3,10 @@
     <dimen name="margin_card">8dp</dimen>
     <dimen name="elevation_card">8dp</dimen>
     <dimen name="card_text_size">18sp</dimen>
+<<<<<<< HEAD
     <dimen name="family_card_text_size">30sp</dimen>
+=======
+>>>>>>> 5ead7cba6f04e51bb64fb19dd2d5568a28824121
     <dimen name="snackbar_text_size">48sp</dimen>
     <dimen name="card_text_padding">4dp</dimen>
     <dimen name="dialog_text_size">20sp</dimen>

@@ -33,6 +33,15 @@
             </intent-filter>
         </activity>
         <activity
+<<<<<<< HEAD
+=======
+            android:name=".FamilyLoginActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+>>>>>>> 5ead7cba6f04e51bb64fb19dd2d5568a28824121
             android:name=".NavActivity"
             android:label="@string/title_activity_nav"
             android:theme="@style/AppTheme.NoActionBar"
@@ -49,7 +58,10 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
         <receiver android:name=".NotificationUtils.NotificationPublisher" />
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5ead7cba6f04e51bb64fb19dd2d5568a28824121
     </application>
 
 </manifest>

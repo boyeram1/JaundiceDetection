@@ -10,6 +10,18 @@
     <string name="infoFragTitle">Jaundice Information</string>
     <string name="nearbyFragTitle">Nearby Doctors</string>
 
+    <!-- Login Elements -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Login</string>
+    <string name="action_sign_in_with_google">Sign in with Google</string>
+    <string name="invalid_email">This email address is invalid</string>
+    <string name="invalid_password">Password is too short</string>
+    <string name="incorrect_password">Password is incorrect</string>
+    <string name="field_required">This field is required</string>
+    <string name="login_error">Login Error!</string>
+
+
     <!-- Messages -->
     <string name="popup_remove_message">Are you sure?</string>
 
@@ -37,16 +49,28 @@
     <string name="nav_logout">Logout</string>
     <string name="nav_child_list">Child List</string>
     <string name="nav_test_list">Test List</string>
+<<<<<<< HEAD
+=======
+    <string name="family_format">%s Family</string>
+    <string name="new_test_dialog_title">Add a New Test</string>
+    <string name="take_picture">Take picture</string>
+    <string name="upload_picture">Upload picture</string>
+    <string name="eye">Eye</string>
+    <string name="palm">Palm</string>
+    <string name="foot">Foot</string>
+    <string name="test_format">%s Family Tests</string>
+>>>>>>> 5ead7cba6f04e51bb64fb19dd2d5568a28824121
     <string name="nav_nearby_doctors">Nearby Doctors</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="info_fragement_text">Blank Text</string>
+    <string name="info_fragment_text">Blank Text</string>
     <string name="title_activity_maps">Map</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="nearby_hospital_text">hospital</string>
     <string name="nearby_hospital_toast">Nearby Hospitals</string>
+<<<<<<< HEAD
     <string name="notification_content">Jaundice Retest Recommended</string>
 
     <!-- Test fragment strings -->
@@ -60,5 +84,9 @@
     <string name="family_format">%s Family</string>
     <string name="child_format">%s\'s Results</string>
     <string name="test_format">%s Family Tests</string>
+=======
+    <string name="action_choose_child">Choose Child</string>
+    >>>>>>> e6f7787fbe22c865e891d2f22db8cd32bb764d2d
+>>>>>>> 5ead7cba6f04e51bb64fb19dd2d5568a28824121
 
 </resources>

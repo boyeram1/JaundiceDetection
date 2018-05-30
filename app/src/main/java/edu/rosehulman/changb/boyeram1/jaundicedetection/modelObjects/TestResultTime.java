@@ -2,6 +2,7 @@ package edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 /**
  * Created by changb on 4/22/2018.

@@ -1,6 +1,10 @@
 package edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects;
 
 import android.graphics.Bitmap;
+<<<<<<< HEAD
+=======
+import android.support.v4.media.session.PlaybackStateCompat;
+>>>>>>> 5ead7cba6f04e51bb64fb19dd2d5568a28824121
 
 import com.google.firebase.database.Exclude;
 

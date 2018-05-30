@@ -27,7 +27,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/margin_card"
-                    android:text="@string/info_fragement_text"
+                    android:text="@string/info_fragment_text"
                     android:textSize="@dimen/info_text_size" />
 
             </android.support.v7.widget.CardView>
