@@ -28,6 +28,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import edu.rosehulman.changb.boyeram1.jaundicedetection.Constants;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.NavActivity;
@@ -292,7 +293,11 @@ public class TestResultListFragment extends Fragment implements INavDrawerFragme
 
             TestResultTime testResultTime = new TestResultTime(date, time);
             String childKey = SharedPrefsUtils.getCurrentChildKey();
-            mAdapter.addTestResult(new TestResult(childKey, testResultTime, new Photo("new", imageBitmap), 10));
+
+            Random r = new Random();
+            int result = r.nextInt(100);
+
+            mAdapter.addTestResult(new TestResult(childKey, testResultTime, new Photo("new", imageBitmap), result));
         }
     }
 
