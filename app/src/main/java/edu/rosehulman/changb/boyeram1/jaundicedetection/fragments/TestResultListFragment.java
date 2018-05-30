@@ -1,6 +1,5 @@
 package edu.rosehulman.changb.boyeram1.jaundicedetection.fragments;
 
-<<<<<<< HEAD
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -13,14 +12,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
-=======
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.os.Bundle;
->>>>>>> 5ead7cba6f04e51bb64fb19dd2d5568a28824121
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
@@ -30,7 +21,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-<<<<<<< HEAD
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,29 +33,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-=======
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.Date;
->>>>>>> 5ead7cba6f04e51bb64fb19dd2d5568a28824121
 import java.util.Locale;
 
 import edu.rosehulman.changb.boyeram1.jaundicedetection.Constants;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.NavActivity;
-<<<<<<< HEAD
 import edu.rosehulman.changb.boyeram1.jaundicedetection.NotificationUtils.NotificationPublisher;
-=======
->>>>>>> 5ead7cba6f04e51bb64fb19dd2d5568a28824121
 import edu.rosehulman.changb.boyeram1.jaundicedetection.R;
-import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.ChildAdapter;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.adapters.TestResultAdapter;
-<<<<<<< HEAD
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Child;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Family;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Photo;
@@ -74,14 +48,8 @@ import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResultT
 import edu.rosehulman.changb.boyeram1.jaundicedetection.svm.SVMTasks;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.utils.SharedPrefsUtils;
 import edu.rosehulman.changb.boyeram1.jaundicedetection.utils.Utils;
-=======
-import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.Photo;
-import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResult;
-import edu.rosehulman.changb.boyeram1.jaundicedetection.modelObjects.TestResultTime;
-import edu.rosehulman.changb.boyeram1.jaundicedetection.utils.SharedPrefsUtils;
 
 import static android.app.Activity.RESULT_OK;
->>>>>>> 5ead7cba6f04e51bb64fb19dd2d5568a28824121
 
 /**
  * A simple {@link Fragment} subclass.
@@ -89,7 +57,6 @@ import static android.app.Activity.RESULT_OK;
  * {@link TestResultAdapter.NavActivityCallback} interface
  * to handle interaction events.
  */
-<<<<<<< HEAD
 public class TestResultListFragment extends Fragment
         implements INavDrawerFragment, View.OnClickListener,
         Utils.FragmentNeedingChildList, SVMTasks.SVMConsumer, TestResultAdapter.NavActivityCallback {
@@ -232,21 +199,13 @@ public class TestResultListFragment extends Fragment implements INavDrawerFragme
 
     @Override
     public void setNavActivityCallback(NavActivity navActivityCallback) {
-<<<<<<< HEAD
         Log.d(TAG, "NavActivityCallback Set");
-=======
-        Log.d("TestResultListFrag", "NavActivityCallback Set");
->>>>>>> 5ead7cba6f04e51bb64fb19dd2d5568a28824121
         mNavActivityCallback = navActivityCallback;
     }
 
     @Override
     public void onFABClicked() {
-<<<<<<< HEAD
         Log.d(TAG, "TestResultListFragment FAB clicked.");
-=======
-        Log.d("FAB CLICK", "TestResultListFragment FAB clicked.");
->>>>>>> 5ead7cba6f04e51bb64fb19dd2d5568a28824121
         showAddNewTestDialog();
     }
 
